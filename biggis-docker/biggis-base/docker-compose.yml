@@ -16,7 +16,7 @@ kafka:
   links:
     - zookeeper:zookeeper
 jobmanager:
-  image: wipa/flink:1.0.3
+  image: wipa/flink:1.0.3-hadoop2.7-scala2.10
   restart: always
   hostname: jobmanager
   ports:
@@ -31,7 +31,7 @@ jobmanager:
     - kafka:kafka
     - zookeeper:zookeeper
 taskmanager:
-  image: wipa/flink:1.0.3
+  image: wipa/flink:1.0.3-hadoop2.7-scala2.10
   restart: always
   hostname: taskmanager
   ports:
