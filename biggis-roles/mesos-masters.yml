@@ -1,0 +1,10 @@
+---
+  - hosts: [mesos_masters]
+    remote_user: vagrant
+    become: yes
+    become_method: sudo
+    roles:
+      - { role: 'roles/java8/' }
+      - { role: 'roles/zookeeper/', zookeeper_hosts: "{{ groups.mesos_masters}}" }
+      - { role: 'roles/mesos/', mesos_quorum: "1", mesos_dns_install: "true", mesos_install_mode: "master", zookeeper_hostnames: "{{ hostvars[groups['mesos_masters']]['ansible_' + iface].ipv4.address | join(':' + zookeeper_client_port + ',') }}:{{ zookeeper_client_port }}", mesos_cluster_name: "biggis.dev" }
+      - { role: 'roles/marathon/', zookeeper_hostnames: "{{ hostvars[groups['mesos_masters']]['ansible_' + iface].ipv4.address | join (':' + zookeeper_client_port + ',') }}:{{ zookeeper_client_port }}" }

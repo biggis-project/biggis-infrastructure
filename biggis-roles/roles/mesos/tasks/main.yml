@@ -57,7 +57,15 @@
     template: src=conf-mesos.j2 dest=/etc/default/mesos
     notify:
       - Restart mesos-master
+    when: mesos_install_mode == "master" or mesos_install_mode == "master-slave"
+    tags: mesos
+
+  # Add new Mesos configuration files
+  - name: Add Mesos default config file
+    template: src=conf-mesos.j2 dest=/etc/default/mesos
+    notify:
       - Restart mesos-slave
+    when: mesos_install_mode == "slave" or mesos_install_mode == "master-slave"
     tags: mesos
 
   - name:  Add Mesos Master config files

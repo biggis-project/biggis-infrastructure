@@ -1,0 +1,47 @@
+zookeeper:
+  image: jplock/zookeeper:3.4.6
+  restart: always
+  hostname: zookeeper
+  ports:
+    - "2181:2181"
+kafka:
+  image: ches/kafka:0.9.0.0
+  restart: always
+  hostname: kafka
+  ports:
+    - "9092:9092"
+    - "7203:7203"
+  environment:
+   KAFKA_ADVERTISED_HOST_NAME: ${HOST_IP}
+  links:
+    - zookeeper:zookeeper
+jobmanager:
+  image: wipa/flink:1.0.3
+  restart: always
+  hostname: jobmanager
+  ports:
+    - "8080:8080"
+    - "8081:8081"
+    # - "220:22"
+  expose:
+    - "6123"
+    - "22"
+  command: /usr/local/flink/bin/config-flink.sh jobmanager
+  links:
+    - kafka:kafka
+    - zookeeper:zookeeper
+taskmanager:
+  image: wipa/flink:1.0.3
+  restart: always
+  hostname: taskmanager
+  ports:
+    - "22"
+  expose:
+    - "6121"
+    - "6122"
+  volumes:
+    - ./examples/flink/data:/home/flink/data
+  links:
+    - jobmanager:jobmanager
+    - kafka:kafka
+    - zookeeper:zookeeper

@@ -52,5 +52,6 @@
   - name: Set nameserver for Mesos Slaves
     lineinfile: dest=/etc/resolv.conf
                 insertbefore=BOF
-                line='nameserver {{ mesos_ip }}'
+                line='nameserver {{ hostvars[item]['ansible_' + iface].ipv4.address }}'
+    with_items: groups['mesos_masters']
     when: (mesos_install_mode == "slave" or mesos_install_mode == "master-slave" ) and "ansible_os_family == 'RedHat' and ansible_distribution_major_version == '7'"

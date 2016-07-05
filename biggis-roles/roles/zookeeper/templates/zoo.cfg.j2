@@ -5,5 +5,5 @@ clientPort={{ client_port }}
 initLimit={{ init_limit }}
 syncLimit={{ sync_limit}}
 {% for server in zookeeper_hosts %}
-server.{{ hostvars[server].zoo_id }}={{ server }}:2888:3888
+server.{{ hostvars[server].zoo_id }}={{ hostvars[server]['ansible_' + iface].ipv4.address }}:2888:3888
 {% endfor %}
