@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 ################################################################################
 #  Licensed to the Apache Software Foundation (ASF) under one
@@ -18,4 +18,14 @@
 # limitations under the License.
 ################################################################################
 
-docker build -t "wipa/flink:1.0.3-hadoop2.7-scala2.10" .
+
+#Kill cluster and remove all containers
+#docker-compose kill
+docker rm $(docker ps -a -q)
+
+#make sure the config file script is executable
+chmod +x flink/config-flink.sh
+
+#rebuild images
+docker build -t="base" base
+docker build -t="wipa/flink:1.0.3-hadoop2.7-scala2.10" flink

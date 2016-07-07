@@ -1,5 +1,3 @@
-#!/bin/sh
-
 ################################################################################
 #  Licensed to the Apache Software Foundation (ASF) under one
 #  or more contributor license agreements.  See the NOTICE file
@@ -18,4 +16,25 @@
 # limitations under the License.
 ################################################################################
 
-docker build -t "wipa/flink:1.0.3-hadoop2.7-scala2.10" .
+FROM java:8-jre-alpine
+
+# Install requirements
+RUN apk add --no-cache bash curl snappy supervisor
+
+# Configure supervisor
+ADD supervisor.conf /etc/supervisor/
+
+# Install Flink
+ARG FLINK_VERSION=1.0.3
+ARG HADOOP_VERSION=27
+ARG SCALA_VERSION=2.10
+
+RUN curl -s $(curl -s https://www.apache.org/dyn/closer.cgi\?as_json\=1 | awk '/preferred/ {gsub(/"/,""); print $2}')flink/flink-${FLINK_VERSION}/flink-${FLINK_VERSION}-bin-hadoop${HADOOP_VERSION}-scala_${SCALA_VERSION}.tgz | tar xvz -C /usr/local/
+RUN ln -s /usr/local/flink-$FLINK_VERSION /usr/local/flink
+ENV FLINK_HOME /usr/local/flink
+ENV PATH $PATH:$FLINK_HOME/bin
+
+# Configure container
+ADD docker-entrypoint.sh $FLINK_HOME/bin/
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["sh", "-c"]

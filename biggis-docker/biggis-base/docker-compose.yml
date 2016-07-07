@@ -45,3 +45,10 @@ taskmanager:
     - jobmanager:jobmanager
     - kafka:kafka
     - zookeeper:zookeeper
+# collector:
+#   image: biggis/collector:v1
+#   hostname: collector
+#   volumes:
+#     - ./folder/to/be/polled:/home/til
+#   links:
+#     - kafka:kafka
