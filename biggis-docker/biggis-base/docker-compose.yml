@@ -5,7 +5,7 @@ zookeeper:
   ports:
     - "2181:2181"
 kafka:
-  image: ches/kafka:0.9.0.0
+  image: wipa/kafka:0.9.0.0
   restart: always
   hostname: kafka
   ports:
@@ -20,13 +20,8 @@ jobmanager:
   restart: always
   hostname: jobmanager
   ports:
-    - "8080:8080"
     - "8081:8081"
-    # - "220:22"
-  expose:
-    - "6123"
-    - "22"
-  command: /usr/local/flink/bin/config-flink.sh jobmanager
+  command: jobmanager
   links:
     - kafka:kafka
     - zookeeper:zookeeper
@@ -34,13 +29,9 @@ taskmanager:
   image: wipa/flink:1.0.3-hadoop2.7-scala2.10
   restart: always
   hostname: taskmanager
-  ports:
-    - "22"
-  expose:
-    - "6121"
-    - "6122"
   volumes:
     - ./examples/flink/data:/home/flink/data
+  command: taskmanager
   links:
     - jobmanager:jobmanager
     - kafka:kafka
@@ -52,3 +43,7 @@ taskmanager:
 #     - ./folder/to/be/polled:/home/til
 #   links:
 #     - kafka:kafka
+# db:
+#   image: biggis/postgis:9.1
+#   restart: always
+#   hostname: db
