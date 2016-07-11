@@ -19,6 +19,49 @@
 | 3   | Flink     | Stream Processor for pre-analytical jobs, normalization, transformation.           |
 | 4   | Hadoop    | HDFS for storing raster data such as satellite images, thermal flight images, etc. |
 
+## Database schema for indexing the tiles
+We are using dockerized postgres + postgis for M3.
+Later, we will replace the database with dockerized Exasolution database.
+
+We can use a readily available docker image containing postgres+postgis as follows:
+``` sh
+# the -P option maps postgress port to some high port in the host
+# this is useful for development e.g. using pgAdmin
+docker run --name biggis-db -P -e POSTGRES_PASSWORD=[secretpasswd] -d mdillon/postgis
+```
+
+To see which port is mapped to the host:
+``` sh
+docker ps
+```
+
+Here is the database schema:
+``` sql
+CREATE EXTENSION postgis; -- activates postgis
+CREATE DATABASE tiledb;
+drop table if exists tiles; -- cleanup
+create table tiles (
+  tileid serial primary key,
+  fname varchar(100) unique not null, -- image location
+  
+  -- the map extend of this tile
+  extent geometry,
+  
+  -- the tile has to be regenerated if something within update_area
+  -- and in a time frame between now and update_past
+  update_area geometry,
+  update_past timestamp,
+  
+  ts timestamp, -- time dimension of the tile
+  ts_idx timestamp, -- when the tile was indexed
+  
+  -- to distinguish amongst different data sources
+  source int
+);
+```
+
+
+
 <!-- ## Tagging scheme
 - Tagging scheme makes use of immutable infrastructure pattern:
   - `<travis-build-#> - <github-branch> - <committer> . <first-8-chars-github-commit-hash>`
