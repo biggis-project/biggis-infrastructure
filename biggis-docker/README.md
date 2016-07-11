@@ -83,7 +83,18 @@ WHERE
         AND b.tileid = 3
 ```
 
-
+## Sample data
+``` sql
+insert into tiles(tileid, fname, extent, update_area, ts, ts_idx) values
+(2, "test2",
+ST_PolygonFromText('polygon((0 0, 1 0, 1 1, 0 1, 0 0))'),
+ST_PolygonFromText('polygon((-1 -1, 2 -1, 2 2, -1 2, -1 -1))'),
+"2016-07-10 00:00:00", "2016-07-10 00:00:01"),
+(3, "test3",
+ST_PolygonFromText('polygon((1 0, 2 0, 2 1, 1 1, 1 0))'),
+ST_PolygonFromText('polygon((0 -1, 3 -1, 3 2, 0 2, 0 -1))'),
+"2016-07-10 00:00:00", "2016-07-10 00:00:01");
+```
 
 
 <!-- ## Tagging scheme
