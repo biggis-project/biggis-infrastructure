@@ -20,14 +20,22 @@
 | 4   | Hadoop    | HDFS for storing raster data such as satellite images, thermal flight images, etc. |
 
 ## Database schema for indexing the tiles
-We are using dockerized postgres + postgis for M3.
+We are using dockerized **mysql** or **postgres/postgis** for M3.
 Later, we will replace the database with dockerized Exasolution database.
 
-We can use a readily available docker image containing postgres+postgis as follows:
+We can use a readily available docker image containing **mysql** as follows:
 ``` sh
-# the -P option maps postgress port to some high port in the host
+# the -P option maps database server port to some high port in the host
+# this is useful for development e.g. using MySQL Workbench
+docker run --name biggis-mysql -P -e MYSQL_ROOT_PASSWORD=[secretpasswd] -d mysql:5.7.13
+```
+
+
+We can use a readily available docker image containing **postgres+postgis** as follows:
+``` sh
+# the -P option maps database server port to some high port in the host
 # this is useful for development e.g. using pgAdmin
-docker run --name biggis-db -P -e POSTGRES_PASSWORD=[secretpasswd] -d mdillon/postgis
+docker run --name biggis-postgres -P -e POSTGRES_PASSWORD=[secretpasswd] -d mdillon/postgis
 ```
 
 To see which port is mapped to the host:
