@@ -68,6 +68,22 @@ create table tiles (
 );
 ```
 
+## Useful queries
+``` sql
+-- find all tiles "a" that are affected
+-- by change in tile "b" (here with tileid=3)
+SELECT 
+    a.*
+FROM
+    tiles AS a,
+    tiles AS b
+WHERE
+    ST_INTERSECTS(a.update_area, b.extent)
+        AND a.tileid <> b.tileid
+        AND b.tileid = 3
+```
+
+
 
 
 <!-- ## Tagging scheme
