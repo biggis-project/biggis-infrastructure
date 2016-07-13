@@ -12,12 +12,14 @@
 # Notes
 
 ## Dockerized base components of BigGIS infrastructure
-| No. | Framework | Description                                                                        |
-|-----|-----------|------------------------------------------------------------------------------------|
-| 1   | Kafka     | Message Queue for data, information propagation.                                   |
-| 2   | Zookeeper | Needed by Kafka for storing configurations.                                        |
-| 3   | Flink     | Stream Processor for pre-analytical jobs, normalization, transformation.           |
-| 4   | Hadoop    | HDFS for storing raster data such as satellite images, thermal flight images, etc. |
+| No.   | Framework  | Image                        | Description                                                                                                                                                           |
+|-------|------------|------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 0     | -          | biggis/base:java8-jre-alpine | Minimal base image. Inherits from java:8-jre-alpine image and adds bash, curl, snappy, supervisor, gosu. Additionally, it handles user permissions in shared volumes. |
+| 1     | Kafka      | biggis/kafka:0.9.0.0         | Message Queue for data, information propagation.                                                                                                                      |
+| 2     | Zookeeper  | biggis/zookeeper:3.4.6       | Needed by Kafka for storing configurations, leader election, state.                                                                                                   |
+| 3     | Flink      | biggis/flink:1.0.3           | Stream Processor for pre-analytical jobs, normalization, transformation.                                                                                              |
+| 4     | PostGIS    | biggis/postgis:9.3           | Used for storing tiles.                                                                                                                                               |
+| ~~4~~ | ~~Hadoop~~ | -                            | ~~HDFS for storing raster data such as satellite images, thermal flight images, etc.~~                                                                                |
 
 <!-- ## Tagging scheme
 - Tagging scheme makes use of immutable infrastructure pattern:
