@@ -1,5 +1,6 @@
 version: '2'
 services:
+
   zookeeper:
     image: biggis/zookeeper:3.4.6
     restart: always
@@ -7,60 +8,81 @@ services:
     environment:
       USER_ID: ${USER_ID}
       USER_NAME: zookeeper
-    ports:
-      - "2181:2181"
+
   kafka:
     image: biggis/kafka:0.9.0.0
     restart: always
     hostname: kafka
+    depends_on:
+      - zookeeper
     ports:
       - "9092:9092"
-      # - "7203:7203"
     environment:
-     KAFKA_ADVERTISED_HOST_NAME: 192.168.99.100
+    #  KAFKA_ADVERTISED_HOST_NAME: 192.168.99.100
      USER_ID: ${USER_ID}
      USER_NAME: kafka
-    links:
-      - zookeeper:zookeeper
+
   jobmanager:
     image: biggis/flink:1.0.3
     restart: always
     hostname: jobmanager
+    depends_on:
+      - db
+      - kafka
     ports:
       - "8081:8081"
     command: docker-entrypoint.sh jobmanager
     environment:
       USER_ID: ${USER_ID}
       USER_NAME: flink
-    links:
-      - kafka:kafka
-      - zookeeper:zookeeper
+    volumes:
+      - flink-conf:/opt/flink/conf
+
   taskmanager:
     image: biggis/flink:1.0.3
     restart: always
     hostname: taskmanager
-    # volumes:
-    #   - ./storage/flink/normtiles:/storage/normtiles
-    #   - ./storage/flink/hstiles:/storage/hstiles
+    depends_on:
+      - jobmanager
     command: docker-entrypoint.sh taskmanager
     environment:
       USER_ID: ${USER_ID}
       USER_NAME: flink
-    links:
-      - jobmanager:jobmanager
-      - kafka:kafka
-      - zookeeper:zookeeper
+    volumes_from:
+      - jobmanager
+    volumes:
+      - storage-rasteringest:/storage/rasteringest:ro
+      - storage-normtiles:/storage/normtiles
+      - storage-hstiles:/storage/hstiles
+
   collector:
     image: biggis/collector:0.9.0.0
     hostname: collector
+    depends_on:
+      - kafka
     environment:
       USER_ID: ${USER_ID}
       USER_NAME: collector
-    # volumes:
-    #   - ./storage/collector/rasteringest:/storage/rasteringest
-    links:
-      - kafka:kafka
-  # db:
-  #   image: biggis/postgis:9.1
-  #   restart: always
-  #   hostname: db
+    volumes:
+      - storage-rasteringest:/storage/rasteringest
+
+  db:
+    image: biggis/mysql:10.1
+    restart: always
+    hostname: db
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+# networks:
+#   collect:
+#   backbone:
+#   db:
+
+volumes:
+  storage-rasteringest:
+  storage-normtiles:
+  storage-hstiles:
+  flink-conf:
+  mysql-data:

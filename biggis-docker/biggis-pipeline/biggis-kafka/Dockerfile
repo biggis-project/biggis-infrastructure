@@ -8,8 +8,7 @@ ARG SCALA_VERSION=2.10
 
 ENV KAFKA_RELEASE_ARCHIVE kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz
 
-RUN mkdir /opt \
-    && curl -s http://apache.openmirror.de/kafka/${KAFKA_VERSION}/${KAFKA_RELEASE_ARCHIVE} | tar -xzf - -C /opt \
+RUN curl -s http://apache.openmirror.de/kafka/${KAFKA_VERSION}/${KAFKA_RELEASE_ARCHIVE} | tar -xzf - -C /opt \
     && mv /opt/kafka_${SCALA_VERSION}-${KAFKA_VERSION} /opt/kafka \
     && mkdir -p /tmp/kafka /tmp/logs
 

@@ -6,8 +6,7 @@ MAINTAINER wipatrick
 
 ARG VERSION=3.4.6
 
-RUN mkdir /opt \
-    && curl -s http://apache.mirrors.pair.com/zookeeper/zookeeper-$VERSION/zookeeper-$VERSION.tar.gz | tar -xzf - -C /opt \
+RUN curl -s http://apache.mirrors.pair.com/zookeeper/zookeeper-$VERSION/zookeeper-$VERSION.tar.gz | tar -xzf - -C /opt \
     && mv /opt/zookeeper-$VERSION /opt/zookeeper \
     && cp /opt/zookeeper/conf/zoo_sample.cfg /opt/zookeeper/conf/zoo.cfg \
     && mkdir -p /tmp/zookeeper

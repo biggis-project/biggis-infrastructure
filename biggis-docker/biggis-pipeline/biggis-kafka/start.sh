@@ -1,16 +1,15 @@
 #!/bin/bash -x
 
-
+# DEPRECATED
 # If a ZooKeeper container is linked with the alias `zookeeper`, use it.
 # You MUST set ZOOKEEPER_IP in env otherwise.
-[ -n "$ZOOKEEPER_PORT_2181_TCP_ADDR" ] && ZOOKEEPER_IP=$ZOOKEEPER_PORT_2181_TCP_ADDR
-[ -n "$ZOOKEEPER_PORT_2181_TCP_PORT" ] && ZOOKEEPER_PORT=$ZOOKEEPER_PORT_2181_TCP_PORT
+# [ -n "$ZOOKEEPER_IP" ] && ZOOKEEPER_IP=$ZOOKEEPER_PORT_2181_TCP_ADDR
+# [ -n "$ZOOKEEPER_PORT" ] && ZOOKEEPER_PORT=$ZOOKEEPER_PORT_2181_TCP_PORT
 
 IP=$(grep "\s${HOSTNAME}$" /etc/hosts | head -n 1 | awk '{print $1}')
 
-# Concatenate the IP:PORT for ZooKeeper to allow setting a full connection
-# string with multiple ZooKeeper hosts
-[ -z "$ZOOKEEPER_CONNECTION_STRING" ] && ZOOKEEPER_CONNECTION_STRING="${ZOOKEEPER_IP}:${ZOOKEEPER_PORT:-2181}"
+# uses specified ZooKeeper container name as dns
+[ -z "$ZOOKEEPER_CONNECTION_STRING" ] && ZOOKEEPER_CONNECTION_STRING="${ZOOKEEPER_IP:-zookeeper}:${ZOOKEEPER_PORT:-2181}"
 
 
 cat /opt/kafka/config/server.properties.template | sed \
