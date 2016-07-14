@@ -36,7 +36,6 @@ We can use a readily available docker image containing **mysql** as follows:
 docker run --name biggis-mysql -P -e MYSQL_ROOT_PASSWORD=[secretpasswd] -d mysql:5.7.13
 ```
 
-
 We can use a readily available docker image containing **postgres+postgis** as follows:
 ``` sh
 # the -P option maps database server port to some high port in the host
@@ -49,6 +48,7 @@ To see which port is mapped to the host:
 docker ps
 ```
 
+<<<<<<< HEAD
 Here is the database schema:
 ``` sql
 CREATE EXTENSION postgis; -- activates postgis
@@ -102,6 +102,9 @@ ST_PolygonFromText('polygon((0 -1, 3 -1, 3 2, 0 2, 0 -1))'),
 "2016-07-10 00:00:00", "2016-07-10 00:00:01");
 ```
 
+=======
+- see also [biggis-project/biggis-tiledb](https://github.com/biggis-project/biggis-tiledb/)
+>>>>>>> 02d0f0251851d057fb77e26891f8cce0362e7a33
 
 <!-- ## Tagging scheme
 - Tagging scheme makes use of immutable infrastructure pattern:
