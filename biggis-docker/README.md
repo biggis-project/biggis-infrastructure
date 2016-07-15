@@ -48,63 +48,8 @@ To see which port is mapped to the host:
 docker ps
 ```
 
-<<<<<<< HEAD
-Here is the database schema:
-``` sql
-CREATE EXTENSION postgis; -- activates postgis
-CREATE DATABASE tiledb;
-drop table if exists tiles; -- cleanup
-create table tiles (
-  tileid serial primary key,
-  fname varchar(100) unique not null, -- image location
-
-  -- the map extend of this tile
-  extent geometry,
-
-  -- the tile has to be regenerated if something within update_area
-  -- and in a time frame between now and update_past
-  update_area geometry,
-  update_past timestamp,
-
-  ts timestamp, -- time dimension of the tile
-  ts_idx timestamp, -- when the tile was indexed
-
-  -- to distinguish amongst different data sources
-  source int
-);
-```
-
-## Useful queries
-``` sql
--- find all tiles "a" that are affected
--- by change in tile "b" (here with tileid=3)
-SELECT
-    a.*
-FROM
-    tiles AS a,
-    tiles AS b
-WHERE
-    ST_INTERSECTS(a.update_area, b.extent)
-        AND a.tileid <> b.tileid
-        AND b.tileid = 3
-```
-
-## Sample data
-``` sql
-insert into tiles(tileid, fname, extent, update_area, ts, ts_idx) values
-(2, "test2",
-ST_PolygonFromText('polygon((0 0, 1 0, 1 1, 0 1, 0 0))'),
-ST_PolygonFromText('polygon((-1 -1, 2 -1, 2 2, -1 2, -1 -1))'),
-"2016-07-10 00:00:00", "2016-07-10 00:00:01"),
-(3, "test3",
-ST_PolygonFromText('polygon((1 0, 2 0, 2 1, 1 1, 1 0))'),
-ST_PolygonFromText('polygon((0 -1, 3 -1, 3 2, 0 2, 0 -1))'),
-"2016-07-10 00:00:00", "2016-07-10 00:00:01");
-```
-
-=======
 - see also [biggis-project/biggis-tiledb](https://github.com/biggis-project/biggis-tiledb/)
->>>>>>> 02d0f0251851d057fb77e26891f8cce0362e7a33
+
 
 <!-- ## Tagging scheme
 - Tagging scheme makes use of immutable infrastructure pattern:

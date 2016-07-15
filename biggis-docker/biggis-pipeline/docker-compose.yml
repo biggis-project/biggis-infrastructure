@@ -29,8 +29,10 @@ services:
     depends_on:
       - db
       - kafka
-    ports:
-      - "8081:8081"
+    # network_mode: "host"
+    # ports:
+    #   - "8081:8081"
+    #   - "6123:6123"
     command: docker-entrypoint.sh jobmanager
     environment:
       USER_ID: ${USER_ID}
