@@ -1,7 +1,8 @@
 ## Getting started
 ```
-➜  biggis-pipeline git:(master) export USER_ID=`id -u $USER`
-➜  biggis-pipeline git:(master) docker-compose up -d
+➜  biggis-pipeline git:(master) ✗ . ./run.sh
+User id will be set to 501
+Starting docker-compose
 Creating volume "biggispipeline_mysql-data" with default driver
 Creating volume "biggispipeline_flink-conf" with default driver
 Creating volume "biggispipeline_storage-normtiles" with default driver
@@ -10,8 +11,8 @@ Creating volume "biggispipeline_storage-rasteringest" with default driver
 Creating biggispipeline_zookeeper_1
 Creating biggispipeline_db_1
 Creating biggispipeline_kafka_1
-Creating biggispipeline_jobmanager_1
 Creating biggispipeline_collector_1
+Creating biggispipeline_jobmanager_1
 Creating biggispipeline_taskmanager_1
 ➜  biggis-pipeline git:(master) docker ps
 CONTAINER ID        IMAGE                      COMMAND                  CREATED             STATUS              PORTS                              NAMES
@@ -23,5 +24,5 @@ af9e9eb7af63        biggis/flink:1.0.3         "/usr/local/bin/entry"   5 second
 0581fd88b2a6        biggis/zookeeper:3.4.6     "/usr/local/bin/entry"   7 seconds ago       Up 6 seconds        2181/tcp, 2888/tcp, 3888/tcp       biggispipeline_zookeeper_1
 ```
 
-## Work in progess (ToDo)
-1. Write ```startup.sh``` for exposing neccessary env variables (${USER_ID}).
+<!-- ## Work in progess (ToDo)
+1. Write ```startup.sh``` for exposing neccessary env variables (${USER_ID}). -->
