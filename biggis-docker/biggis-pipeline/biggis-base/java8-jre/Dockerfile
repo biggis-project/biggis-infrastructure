@@ -3,10 +3,7 @@ FROM java:8-jre-alpine
 MAINTAINER wipatrick
 
 ADD repositories /etc/apk
-RUN apk add --no-cache bash curl snappy supervisor gosu@testing
-
-# Configure supervisor
-ADD supervisor.conf /etc/supervisor/
+RUN apk add --no-cache bash gosu@testing
 
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
