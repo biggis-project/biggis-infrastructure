@@ -6,10 +6,14 @@ MAINTAINER wipatrick
 
 ARG VERSION=3.4.6
 
-RUN curl -s http://apache.mirrors.pair.com/zookeeper/zookeeper-$VERSION/zookeeper-$VERSION.tar.gz | tar -xzf - -C /opt \
-    && mv /opt/zookeeper-$VERSION /opt/zookeeper \
-    && cp /opt/zookeeper/conf/zoo_sample.cfg /opt/zookeeper/conf/zoo.cfg \
-    && mkdir -p /tmp/zookeeper
+RUN set -x && \
+    apk --update add --virtual build-dependencies curl && \
+    curl -s http://apache.mirrors.pair.com/zookeeper/zookeeper-$VERSION/zookeeper-$VERSION.tar.gz | tar -xzf - -C /opt && \
+    ln -s /opt/zookeeper-$VERSION /opt/zookeeper && \
+    cp /opt/zookeeper/conf/zoo_sample.cfg /opt/zookeeper/conf/zoo.cfg && \
+    mkdir -p /tmp/zookeeper && \
+    apk del build-dependencies && \
+    rm -rf /var/cache/apk/*
 
 WORKDIR /opt/zookeeper
 
