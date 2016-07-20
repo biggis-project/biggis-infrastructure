@@ -21,9 +21,6 @@
 | 3     | Zookeeper      | biggis/zookeeper:3.4.6       | Needed by Kafka for storing configurations, leader election, state.                    |
 | 4     | Flink          | biggis/flink:1.0.3           | Stream Processor for pre-analytical jobs, normalization, transformation.               |
 | 5     | MariaDB        | biggis/mariadb:10.1          | Used for storing tile indices etc.                                                     |
-| ~~6~~ | ~~PostgreSQL~~ | ~~biggis/postgres:9.5~~      | ~~Simple PostgreSQL db.~~                                                              |
-| ~~6~~ | ~~PostGIS~~    | ~~biggis/postgis:9.5-2.2~~   | ~~Inherits from biggis/postgres:9.5.~~                                                 |
-| ~~7~~ | ~~Hadoop~~     | -                            | ~~HDFS for storing raster data such as satellite images, thermal flight images, etc.~~ |
 
 ## Database schema for indexing the tiles
 We are using dockerized **mysql** or **postgres/postgis** for M3.
