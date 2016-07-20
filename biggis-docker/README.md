@@ -12,18 +12,18 @@
 # Notes
 
 ## Dockerized base components of BigGIS infrastructure
-| No.   | Framework      | Image                        | Description                                                                                                                                                            |
-|-------|----------------|------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 0a)   | -              | biggis/base:alpine-3.4       | Same as official alpine:3.4 image only tagged in biggis-schema.                                                                                                        |
-| 0     | -              | biggis/base:java8-jre-alpine | Minimal base image. Inherits from java:8-jre-alpine image and adds bash, curl, snappy, supervisor, gosu.  Additionally, it handles user permissions in shared volumes. |
-| 1     | -              | biggis/collector:0.9.0.0     | Inherits from biggis/kafka:0.9.0.0 and uses inotifywait to watch for file creation.                                                                                    |
-| 2     | Kafka          | biggis/kafka:0.9.0.0         | Message Queue for data, information propagation.                                                                                                                       |
-| 3     | Zookeeper      | biggis/zookeeper:3.4.6       | Needed by Kafka for storing configurations, leader election, state.                                                                                                    |
-| 4     | Flink          | biggis/flink:1.0.3           | Stream Processor for pre-analytical jobs, normalization, transformation.                                                                                               |
-| 5     | MySQL          | biggis/mysql:10.1            | Used for storing indices etc.                                                                                                                                          |
-| ~~6~~ | ~~PostgreSQL~~ | ~~biggis/postgres:9.5~~      | ~~Simple PostgreSQL db.~~                                                                                                                                              |
-| ~~6~~ | ~~PostGIS~~    | ~~biggis/postgis:9.5-2.2~~   | ~~Inherits from biggis/postgres:9.5.~~                                                                                                                                 |
-| ~~7~~ | ~~Hadoop~~     | -                            | ~~HDFS for storing raster data such as satellite images, thermal flight images, etc.~~                                                                                 |
+| No.   | Framework      | Image                        | Description                                                                            |
+|-------|----------------|------------------------------|----------------------------------------------------------------------------------------|
+| 0a)   | -              | biggis/base:alpine-3.4       | Official alpine:3.4 image + gosu + UID handling                                        |
+| 0b)   | -              | biggis/base:java8-jre-alpine | Official java:8-jre-alpine image + bash, gosu + UID handling                           |
+| 1     | -              | biggis/collector:0.9.0.0     | Inherits from biggis/kafka:0.9.0.0 and uses inotifywait to watch for file creation.    |
+| 2     | Kafka          | biggis/kafka:0.9.0.0         | Message Queue for data, information propagation.                                       |
+| 3     | Zookeeper      | biggis/zookeeper:3.4.6       | Needed by Kafka for storing configurations, leader election, state.                    |
+| 4     | Flink          | biggis/flink:1.0.3           | Stream Processor for pre-analytical jobs, normalization, transformation.               |
+| 5     | MariaDB        | biggis/mariadb:10.1          | Used for storing tile indices etc.                                                     |
+| ~~6~~ | ~~PostgreSQL~~ | ~~biggis/postgres:9.5~~      | ~~Simple PostgreSQL db.~~                                                              |
+| ~~6~~ | ~~PostGIS~~    | ~~biggis/postgis:9.5-2.2~~   | ~~Inherits from biggis/postgres:9.5.~~                                                 |
+| ~~7~~ | ~~Hadoop~~     | -                            | ~~HDFS for storing raster data such as satellite images, thermal flight images, etc.~~ |
 
 ## Database schema for indexing the tiles
 We are using dockerized **mysql** or **postgres/postgis** for M3.
