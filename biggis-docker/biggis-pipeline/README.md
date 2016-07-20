@@ -24,5 +24,6 @@ af9e9eb7af63        biggis/flink:1.0.3         "/usr/local/bin/entry"   5 second
 0581fd88b2a6        biggis/zookeeper:3.4.6     "/usr/local/bin/entry"   7 seconds ago       Up 6 seconds        2181/tcp, 2888/tcp, 3888/tcp       biggispipeline_zookeeper_1
 ```
 
-<!-- ## Work in progess (ToDo)
-1. Write ```startup.sh``` for exposing neccessary env variables (${USER_ID}). -->
+## Work in progess (ToDo)
+1. Write proper documentation.
+2. Provide sample Flink job (_testing/flink_) on how to communicate with Kafka.
