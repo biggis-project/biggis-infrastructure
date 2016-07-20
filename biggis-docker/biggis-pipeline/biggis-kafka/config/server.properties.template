@@ -41,8 +41,8 @@ advertised.port={{KAFKA_ADVERTISED_PORT}}
 ############################# Log Basics #############################
 
 # The directory under which to store log files
-log.dir=/tmp/kafka
-log.dirs=/tmp/kafka
+log.dir=/tmp/kafka/data
+log.dirs=/tmp/kafka/data
 
 # The number of logical partitions per topic per server. More partitions allow greater parallelism
 # for consumption, but also mean more files.

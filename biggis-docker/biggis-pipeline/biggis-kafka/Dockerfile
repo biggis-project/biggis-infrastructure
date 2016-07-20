@@ -24,9 +24,6 @@ ADD start.sh $KAFKA_HOME/start.sh
 
 WORKDIR /opt/kafka
 
-VOLUME [ "/tmp/kafka", "/tmp/logs" ]
-
-# broker, jmx
 EXPOSE 9092 7203
 
 CMD ["/opt/kafka/start.sh"]

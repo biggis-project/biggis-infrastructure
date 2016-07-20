@@ -16,12 +16,8 @@ RUN set -x && \
 ENV FLINK_HOME /opt/flink
 ENV PATH $PATH:$FLINK_HOME/bin
 
-# Configure container
 ADD docker-entrypoint.sh $FLINK_HOME/bin/
 
 WORKDIR /opt/flink
 
-VOLUME ["/storage"]
-
-# ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["docker-entrypoint.sh", "sh", "-c"]
