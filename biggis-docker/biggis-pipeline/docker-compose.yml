@@ -73,7 +73,7 @@ services:
       - storage-rasteringest:/storage/rasteringest
 
   db:
-    image: biggis/mysql:10.1
+    image: biggis/mariadb:10.1
     restart: always
     hostname: db
     ports:
