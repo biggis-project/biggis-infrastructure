@@ -5,6 +5,9 @@ sudo: required
 services:
   - docker
 
+before_script:
+  - cd biggis-docker/biggis-pipeline
+
 script:
   #build the images
   - docker build -t biggis/base:alpine-3.4 biggis-base/alpine
