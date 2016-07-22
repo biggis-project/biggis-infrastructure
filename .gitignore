@@ -1,4 +1,5 @@
-**/.vagrant/
+.vagrant/
 playbook.retry
 .DS_Store
-**/biggis-postgis/
+biggis-postgis/
+target/
