@@ -41,7 +41,7 @@ $ make start
 $ make clean
 ```
 
-Once everything is up and running, you are provided with a full stack of integrated big data frameworks. E.g., you can visit the Flink UI on ```http://&lt;DOCKER_HOST_IP&gt;:8081```. The _&lt;DOCKER_HOST_IP&gt;_ is the IP where your Docker Engine is running on, which can be (1) _localhost_ or _127.0.0.1_ if you are running under Linux or (2) the IP of your virtual machine, e.g. _192.168.99.100_ if you used Docker Machine to provision a VirtualBox instance. Use ```make list``` to list all running container instances.
+Once everything is up and running, you are provided with a full stack of integrated big data frameworks. E.g., you can visit the Flink UI on ```http://\<DOCKER_HOST_IP\>:8081```. The _&lt;DOCKER_HOST_IP&gt;_ is the IP where your Docker Engine is running on, which can be (1) _localhost_ or _127.0.0.1_ if you are running under Linux or (2) the IP of your virtual machine, e.g. _192.168.99.100_ if you used Docker Machine to provision a VirtualBox instance. Use ```make list``` to list all running container instances.
 ```sh
 $ make list
 Name                          Command               State                       Ports
