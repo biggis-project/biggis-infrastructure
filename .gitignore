@@ -3,3 +3,5 @@ playbook.retry
 .DS_Store
 biggis-postgis/
 target/
+*.iml
+.idea/
