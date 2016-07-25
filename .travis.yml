@@ -2,21 +2,42 @@ language: bash
 
 sudo: required
 
+env:
+  - BASE=biggis/base:alpine-3.4
+  - BASE_JRE=biggis/base:java8-jre-alpine
+  - KAFKA=biggis/kafka:0.9.0.0
+  - COLLECTOR=biggis/collector:0.9.0.0
+  - ZOOKEEPER=biggis/zookeeper:3.4.6
+  - FLINK=biggis/flink:1.0.3
+  - MARIADB=biggis/mariadb:10.1
+
 services:
   - docker
+
+install:
+  #login to dockerhub
+  - docker login --email=$DOCKER_HUB_EMAIL --username=$DOCKER_HUB_USERNAME --password=$DOCKER_HUB_PASSWORD
 
 before_script:
   - cd biggis-docker/biggis-pipeline
 
 script:
   #build the images
-  - docker build -t biggis/base:alpine-3.4 biggis-base/alpine
-  - docker build -t biggis/base:java8-jre-alpine biggis-base/java8-jre
-  - docker build -t biggis/kafka:0.9.0.0 biggis-kafka
-  - docker build -t biggis/collector:0.9.0.0 biggis-collector
-  - docker build -t biggis/zookeeper:3.4.6 biggis-zookeeper
-  - docker build -t biggis/flink:1.0.3 biggis-flink
-  - docker build -t biggis/mariadb:10.1 biggis-mariadb
+  - docker build --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` --build-arg VCS_REF=`git rev-parse --short HEAD` -t $BASE biggis-base/alpine
+  - docker build --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` --build-arg VCS_REF=`git rev-parse --short HEAD` -t $BASE_JRE biggis-base/java8-jre
+  - docker build --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` --build-arg VCS_REF=`git rev-parse --short HEAD` -t $KAFKA biggis-kafka
+  - docker build --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` --build-arg VCS_REF=`git rev-parse --short HEAD` -t $COLLECTOR biggis-collector
+  - docker build --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` --build-arg VCS_REF=`git rev-parse --short HEAD` -t $ZOOKEEPER biggis-zookeeper
+  - docker build --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` --build-arg VCS_REF=`git rev-parse --short HEAD` -t $FLINK biggis-flink
+  - docker build --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` --build-arg VCS_REF=`git rev-parse --short HEAD` -t $MARIADB biggis-mariadb
 
 after_success:
   - echo "test successful"
+  #push the image to dockerhub
+  - docker push $BASE
+  - docker push $BASE_JRE
+  - docker push $KAFKA
+  - docker push $COLLECTOR
+  - docker push $ZOOKEEPER
+  - docker push $FLINK
+  - docker push $MARIADB

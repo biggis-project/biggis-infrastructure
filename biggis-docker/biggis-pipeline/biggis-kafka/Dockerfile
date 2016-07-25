@@ -6,6 +6,19 @@ MAINTAINER wipatrick
 ARG KAFKA_VERSION=0.9.0.0
 ARG SCALA_VERSION=2.10
 
+ARG BUILD_DATE
+ARG VCS_REF
+
+LABEL eu.biggis-project.build-date=$BUILD_DATE \
+      eu.biggis-project.license="MIT" \
+      eu.biggis-project.name="BigGIS" \
+      eu.biggis-project.url="http://biggis-project.eu/" \
+      eu.biggis-project.vcs-ref=$VCS_REF \
+      eu.biggis-project.vcs-type="Git" \
+      eu.biggis-project.vcs-url="https://github.com/biggis-project/biggis-infrastructure" \
+      eu.biggis-project.environment="dev" \
+      eu.biggis-project.version=$KAFKA_VERSION
+
 ENV KAFKA_RELEASE_ARCHIVE kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz
 
 RUN set -x && \
