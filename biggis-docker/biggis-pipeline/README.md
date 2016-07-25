@@ -62,6 +62,6 @@ Use ```make help``` for information about the commands.
 tbd
 
 
-
 ## Work in progess (ToDo)
 1. Documentation on section 'M3 Raster-Pipeline: A High-Level Infrastructure Overview'
+2. CI with Travis & automatically push to Dockerhub
