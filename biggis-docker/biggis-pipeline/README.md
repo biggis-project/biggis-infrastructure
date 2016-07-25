@@ -65,4 +65,3 @@ tbd
 
 ## Work in progess (ToDo)
 1. Documentation on section 'M3 Raster-Pipeline: A High-Level Infrastructure Overview'
-2. Provide sample Flink job (_testing/flink_) on how to communicate with Kafka.
