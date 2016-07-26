@@ -10,8 +10,8 @@ services:
     environment:
       USER_ID: ${USER_ID}
       USER_NAME: zookeeper
-    volumes:
-      - zookeeper-data:/tmp/zookeeper/data
+    # volumes:
+    #   - zookeeper-data:/tmp/zookeeper/data
 
   kafka:
     image: biggis/kafka:0.9.0.0
@@ -25,8 +25,8 @@ services:
       KAFKA_ADVERTISED_HOST_NAME: 192.168.99.100
       USER_ID: ${USER_ID}
       USER_NAME: kafka
-    volumes:
-      - kafka-data:/tmp/kafka/data
+    # volumes:
+    #   - kafka-data:/tmp/kafka/data
 
   jobmanager:
     image: biggis/flink:1.0.3
@@ -59,9 +59,9 @@ services:
     volumes_from:
       - jobmanager
     volumes:
-      - storage-rasteringest:/storage/rasteringest:ro
-      - storage-normtiles:/storage/normtiles
-      - storage-hstiles:/storage/hstiles
+      - rasteringest:/storage/ingesttiles:ro
+      - normtiles:/storage/normtiles
+      - hstiles:/storage/hstiles
 
   collector:
     image: biggis/collector:0.9.0.0
@@ -71,8 +71,9 @@ services:
     environment:
       USER_ID: ${USER_ID}
       USER_NAME: collector
+      KAFKA_TOPIC: collect-event
     volumes:
-      - storage-rasteringest:/storage/rasteringest
+      - ingesttiles:/storage/ingesttiles
 
   db:
     image: biggis/mariadb:10.1.14
@@ -80,19 +81,14 @@ services:
     hostname: db
     ports:
       - 3306:3306
-    volumes:
-      - db-data:/opt/mysql
-
-# networks:
-#   collect:
-#   backbone:
-#   db:
+    # volumes:
+    #   - db-data:/opt/mysql
 
 volumes:
-  zookeeper-data:
-  kafka-data:
-  db-data:
-  storage-rasteringest:
-  storage-normtiles:
-  storage-hstiles:
+  # zookeeper-data:
+  # kafka-data:
+  # db-data:
+  ingesttiles:
+  normtiles:
+  hstiles:
   flink-conf:
