@@ -59,7 +59,8 @@ biggispipeline_zookeeper_1     /usr/local/bin/entrypoint. ...   Up      2181/tcp
 Use ```make help``` for information about the commands.
 
 ## M3 Raster-Pipeline: A High-Level Infrastructure Overview
-[highlevel-infrastructure.pdf](https://github.com/biggis-project/biggis-infrastructure/files/383315/highlevel-infrastructure.pdf)
+![highlevel-infrastructure](https://cloud.githubusercontent.com/assets/15153294/17130376/81b4f544-5318-11e6-83a2-0d860acf79c1.png)
+
 
 
 ## Work in progess (ToDo)
