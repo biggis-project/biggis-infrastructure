@@ -53,6 +53,7 @@ biggispipeline_kafka_1         /usr/local/bin/entrypoint. ...   Up      7203/tcp
 biggispipeline_taskmanager_1   /usr/local/bin/entrypoint. ...   Up
 biggispipeline_zookeeper_1     /usr/local/bin/entrypoint. ...   Up      2181/tcp, 2888/tcp, 3888/tcp
 ```
+![screenshot 2016-07-26 11 12 15](https://cloud.githubusercontent.com/assets/15153294/17132419/f116c4f4-5321-11e6-8790-43a7ffb50fab.png)
 
 **Tip**: Once you stopped the running containers via ```make stop``` and you want to remove them as well as the created shared volumes and the project specific Docker network bridge on your Docker Host, you should run a ```make clean```. This way all dangling volumes under _/var/lib/docker/volumes_ are removed.
 

@@ -59,7 +59,7 @@ services:
     volumes_from:
       - jobmanager
     volumes:
-      - rasteringest:/storage/ingesttiles:ro
+      - ingesttiles:/storage/ingesttiles:ro
       - normtiles:/storage/normtiles
       - hstiles:/storage/hstiles
 
