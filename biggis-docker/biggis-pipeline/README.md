@@ -22,8 +22,16 @@ For detailed description please refer to [https://docs.docker.com/](https://docs
 | 5     | [MariaDB](https://mariadb.org/)            | biggis/mariadb:10.1          | Used for storing tile indices for M3. To be replaced with Exasolution database.                                           |
 
 ## Usage
-We are using Docker Compose to automatically spin up a multi-container ecosystem forming the BigGIS analytical pipeline of the aforementioned components. To get you going more easily in the beginning, the commands specifieds in the ```Makefile``` will help you to perform the very basic life cycle steps of docker containers seamlessly.
 
+### General
+We are using Docker Compose to automatically spin up a multi-container ecosystem forming the BigGIS analytical pipeline of the aforementioned components.
+
+**Note**: If you are not running native Linux as a Docker Host make sure that you set the env variables correctly to communicate with the Docker daemon by running the following:
+```sh
+$ eval $(docker-machine env)
+```
+
+To get you going more easily in the beginning, the commands specifieds in the ```Makefile``` will help you to perform the very basic life cycle steps of docker containers seamlessly.
 ```sh
 # Build images locally
 $ make build
@@ -58,6 +66,91 @@ biggispipeline_zookeeper_1     /usr/local/bin/entrypoint. ...   Up      2181/tcp
 **Tip**: Once you stopped the running containers via ```make stop``` and you want to remove them as well as the created shared volumes and the project specific Docker network bridge on your Docker Host, you should run a ```make clean```. This way all dangling volumes under _/var/lib/docker/volumes_ are removed.
 
 Use ```make help``` for information about the commands.
+
+### Specific Services Only
+Even though launching the full BigGIS analytical pipeline only takes a couple of seconds, sometimes you only want to do some quick testings with only a couple of services running, e.g. consuming and producing data from/to Kafka while your developping a Flink Job inside your IDE. You are able to pass a ```service``` argument to ```make up```, specifying the service you want to launch.
+
+**Note**: The frameworks running inside these Docker containers do have certain dependencies to other frameworks, e.g. Kafka needs a running Zookeeper instance. Thus, ```make up service=kafka``` will also start up Zookeeper. The name of a service is directly derived from the wording inside the ```docker-compose.yml```.
+
+### Starting Kafka and do some local Flink development
+
+1. Start Kafka.
+```sh
+$ make up service=kafka
+```
+2. Test, that Kafka is running correctly by (1) creating a topic, e.g. _test_.
+```sh
+$ ./testing/kafka/kafkaCreateTopic.sh test
+Starting with UID : 9001
+Created topic "test".
+```
+(2) starting a simple consumer in a new terminal window.
+```sh
+$ ./testing/kafka/kafkaConsumer.sh test
+```
+(3) starting a simple producer in a new terminal window and type _hello world_.
+```sh
+$ ./testing/kafka/kafkaProducer.sh test
+hello world
+```
+You will see _hello world_ pop up in your consumer window.
+3. Import the Maven project under _testing/flink_ in your IDE. You will find three Flink Jobs written in the Java API: ```ReadFromKafka```, ```WriteToKafka``` and ```KafkaWordCount```. For the purpose of this demo, we use ```ReadFromKafka```. In order to run the Job, you need to provide the some arguments as shown in the code (IntelliJ: Run > Edit configurations > Program arguments). Then run the ```ReadFromKafka``` Flink Job.
+```Java
+/**
+* This is a valid input example:
+* 		--topic test --bootstrap.servers 192.168.99.100:9092 --zookeeper.connect 192.168.99.100:2181 --group.id myGroup
+*
+*/
+public class ReadFromKafka {
+
+    public static void main (String [] args ) throws Exception {
+
+        // parse user parameters
+        ParameterTool parameterTool = ParameterTool.fromArgs(args);
+
+        // create execution environment
+        final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+
+        DataStream<String> kafkaStream = env
+                .addSource(new FlinkKafkaConsumer09<>(
+                        parameterTool.getRequired("topic"),
+                        new SimpleStringSchema(),
+                        parameterTool.getProperties()
+                ));
+
+        // print() will write the contents of the stream to the TaskManager's standard out stream
+        kafkaStream.map(new MapFunction<String, String>() {
+
+            private static final long serialVersionUID = -2522168019108009712L;
+
+            @Override
+            public String map(String msg) throws Exception {
+                return "Kafka and Flink says: " + msg;
+            }
+        }).print();
+
+        env.execute();
+    }
+}
+```
+4. Use the simple producer in the open terminal window to send a new message.
+```sh
+hello biggis
+```
+5. See the message in your IDE,
+```sh
+1> Kafka and Flink says: hello biggis
+```
+and in the open terminal window of the simple consumer.
+```sh
+hello world
+hello biggis
+```
+6. Stop the Job, stop the the simple consumer and producer (```ctrl+c```) and stop Kafka.
+```sh
+$ make stop
+$ make clean
+```
 
 ## M3 Raster-Pipeline: A High-Level Infrastructure Overview
 After building the Docker images with ```make build``` and starting the BigGIS analytical Pipeline ```make up``` you are provided with the following components:

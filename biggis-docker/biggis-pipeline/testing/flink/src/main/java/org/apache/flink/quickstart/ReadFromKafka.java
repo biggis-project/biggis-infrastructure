@@ -1,5 +1,6 @@
 package org.apache.flink.quickstart;
 
+import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -39,7 +40,15 @@ public class ReadFromKafka {
                 ));
 
         // print() will write the contents of the stream to the TaskManager's standard out stream
-        kafkaStream.print();
+        kafkaStream.map(new MapFunction<String, String>() {
+
+            private static final long serialVersionUID = -2522168019108009712L;
+
+            @Override
+            public String map(String msg) throws Exception {
+                return "Kafka and Flink says: " + msg;
+            }
+        }).print();
 
         env.execute();
     }
