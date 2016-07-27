@@ -74,11 +74,11 @@ Even though launching the full BigGIS analytical pipeline only takes a couple of
 
 ### Starting Kafka and do some local Flink development
 
-1. Start Kafka.
+Start Kafka.
 ```sh
 $ make up service=kafka
 ```
-2. Test, that Kafka is running correctly by (1) creating a topic, e.g. _test_.
+Test, that Kafka is running correctly by (1) creating a topic, e.g. _test_.
 ```sh
 $ ./testing/kafka/kafkaCreateTopic.sh test
 Starting with UID : 9001
@@ -94,7 +94,8 @@ $ ./testing/kafka/kafkaProducer.sh test
 hello world
 ```
 You will see _hello world_ pop up in your consumer window.
-3. Import the Maven project under _testing/flink_ in your IDE. You will find three Flink Jobs written in the Java API: ```ReadFromKafka```, ```WriteToKafka``` and ```KafkaWordCount```. For the purpose of this demo, we use ```ReadFromKafka```. In order to run the Job, you need to provide the some arguments as shown in the code (IntelliJ: Run > Edit configurations > Program arguments). Then run the ```ReadFromKafka``` Flink Job.
+
+Import the Maven project under _testing/flink_ in your IDE. You will find three Flink Jobs written in the Java API: ```ReadFromKafka```, ```WriteToKafka``` and ```KafkaWordCount```. For the purpose of this demo, we use ```ReadFromKafka```. In order to run the Job, you need to provide the some arguments as shown in the code (IntelliJ: Run > Edit configurations > Program arguments). Then run the ```ReadFromKafka``` Flink Job.
 ```Java
 /**
 * This is a valid input example:
@@ -133,11 +134,11 @@ public class ReadFromKafka {
     }
 }
 ```
-4. Use the simple producer in the open terminal window to send a new message.
+Use the simple producer in the open terminal window to send a new message.
 ```sh
 hello biggis
 ```
-5. See the message in your IDE,
+See the message in your IDE,
 ```sh
 1> Kafka and Flink says: hello biggis
 ```
@@ -146,7 +147,7 @@ and in the open terminal window of the simple consumer.
 hello world
 hello biggis
 ```
-6. Stop the Job, stop the the simple consumer and producer (```ctrl+c```) and stop Kafka.
+Stop the Job, stop the the simple consumer and producer (```ctrl+c```) and stop Kafka.
 ```sh
 $ make stop
 $ make clean
