@@ -61,7 +61,7 @@ Use ```make help``` for information about the commands.
 
 ## M3 Raster-Pipeline: A High-Level Infrastructure Overview
 After building the Docker images with ```make build``` and starting the BigGIS analytical Pipeline ```make up``` you are provided with the following components:
-![highlevel-infrastructure](https://cloud.githubusercontent.com/assets/15153294/17130376/81b4f544-5318-11e6-83a2-0d860acf79c1.png)
+![highlevel-infrastructure_v2](https://cloud.githubusercontent.com/assets/15153294/17170469/76eedb28-53ec-11e6-8928-15e21f2b7174.png)
 
 
 As a first PoC, we want to demonstrate an integrated, end-to-end, analytical BigGIS pipeline for a specific use case. Therefore, we are considering performing a [hot spot analysis](https://pro.arcgis.com/de/pro-app/tool-reference/spatial-statistics/h-how-hot-spot-analysis-getis-ord-gi-spatial-stati.htm) on a thermal flight dataset. The workflow of our M3 Raster-Pipeline is as follows:

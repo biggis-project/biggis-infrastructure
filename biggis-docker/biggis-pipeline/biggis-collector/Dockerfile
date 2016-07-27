@@ -20,8 +20,8 @@ RUN apk add --no-cache inotify-tools expect perl-io-tee@testing
 
 RUN mkdir /opt/collector
 ADD collector-daemon.sh /opt/collector
-RUN mkdir /storage/ingesttiles
+RUN mkdir /storage/tiles
 
 WORKDIR /home/collector
 
-CMD ["/opt/collector/collector-daemon.sh", "/storage/ingesttiles"]
+CMD ["/opt/collector/collector-daemon.sh", "/storage/tiles"]

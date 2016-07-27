@@ -59,9 +59,10 @@ services:
     volumes_from:
       - jobmanager
     volumes:
-      - ingesttiles:/storage/ingesttiles:ro
-      - normtiles:/storage/normtiles
-      - hstiles:/storage/hstiles
+      - tiles:/storage/tiles
+      # - ingesttiles:/storage/ingesttiles:ro
+      # - normtiles:/storage/normtiles
+      # - hstiles:/storage/hstiles
 
   collector:
     image: biggis/collector:0.9.0.0
@@ -73,7 +74,8 @@ services:
       USER_NAME: collector
       KAFKA_TOPIC: collect-event
     volumes:
-      - ingesttiles:/storage/ingesttiles
+      - tiles:/storage/tiles
+      # - ingesttiles:/storage/ingesttiles
 
   db:
     image: biggis/mariadb:10.1.14
@@ -88,7 +90,8 @@ volumes:
   # zookeeper-data:
   # kafka-data:
   # db-data:
-  ingesttiles:
-  normtiles:
-  hstiles:
+  # ingesttiles:
+  # normtiles:
+  # hstiles:
+  tiles:
   flink-conf:
