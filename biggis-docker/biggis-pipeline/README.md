@@ -30,7 +30,7 @@ We are using Docker Compose to automatically spin up a multi-container ecosystem
 ```sh
 $ eval $(docker-machine env)
 ```
-Besides, if you want use Kafka container from external sources, e.g. for testing from within your IDE (see the example down later), you will need to change the following entry in the ```docker-compose.yml``` to make it work:
+Besides, if you want to interact with the Kafka container from external sources, e.g. for testing from within your IDE (see the example down later), you will need to specify the following entry in the ```docker-compose.yml``` according to your Docker Host IP address in order to make it work:
 ```yaml
 # Using Docker Machine:
 # docker-machine ip <name-of-machine>
