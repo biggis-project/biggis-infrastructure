@@ -30,6 +30,15 @@ We are using Docker Compose to automatically spin up a multi-container ecosystem
 ```sh
 $ eval $(docker-machine env)
 ```
+Besides, if you want use Kafka container from external sources, e.g. for testing from within your IDE (see the example down later), you will need to change the following entry in the ```docker-compose.yml``` to make it work:
+```yaml
+# Using Docker Machine:
+# docker-machine ip <name-of-machine>
+#
+# On native Linux:
+# ip route get 1 | awk '{print $NF;exit}
+KAFKA_ADVERTISED_HOST_NAME: <DOCKER_HOST_IP>
+```
 
 To get you going more easily in the beginning, the commands specifieds in the ```Makefile``` will help you to perform the very basic life cycle steps of docker containers seamlessly.
 ```sh
