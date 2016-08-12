@@ -72,7 +72,7 @@ biggispipeline_taskmanager_1   /usr/local/bin/entrypoint. ...   Up
 biggispipeline_tomcat_1        /usr/local/bin/entrypoint. ...   Up      0.0.0.0:8080->8080/tcp
 biggispipeline_zookeeper_1     /usr/local/bin/entrypoint. ...   Up      0.0.0.0:2181->2181/tcp, 2888/tcp, 3888/tcp
 ```
-![screenshot 2016-07-26 11 12 15](https://cloud.githubusercontent.com/assets/15153294/17132419/f116c4f4-5321-11e6-8790-43a7ffb50fab.png)
+![image](https://cloud.githubusercontent.com/assets/15153294/17624492/23d198b6-60a5-11e6-8d50-b37dd1039cca.png)
 
 **Tip**: Once you stopped the running containers via ```make stop``` and you want to remove them as well as the created shared volumes and the project specific Docker network bridge on your Docker Host, you should run a ```make clean```. This way all dangling volumes under _/var/lib/docker/volumes_ are removed.
 
@@ -177,6 +177,6 @@ As a first PoC, we want to demonstrate an integrated, end-to-end, analytical Big
 4. The newly updated tiles are then mapped together and a hollistic image of a specific area is generated and stored on disk. A new event _genimg-event_ is pushed to ```Kafka```.
 5. Lastly, a Tomcat based web app registers the _genimg-event_, extracts the filesystem path where the newly generated image is stored off the Kafka message and updated the displays this image in a browser. Old images are thus periodically updated.
 
-![pipeline-workflow_v3](https://cloud.githubusercontent.com/assets/15153294/17623747/e7622c40-60a1-11e6-9dcb-3e6b2fd06aca.png)
+![pipeline-workflow_v3](https://cloud.githubusercontent.com/assets/15153294/17624309/523f2534-60a4-11e6-82e6-da6d923d98f1.png)
 
 ## Work in progess (ToDo)
