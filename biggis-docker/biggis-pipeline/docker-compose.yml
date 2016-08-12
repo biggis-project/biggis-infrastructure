@@ -60,9 +60,6 @@ services:
       - jobmanager
     volumes:
       - tiles:/storage/tiles
-      # - ingesttiles:/storage/ingesttiles:ro
-      # - normtiles:/storage/normtiles
-      # - hstiles:/storage/hstiles
 
   collector:
     image: biggis/collector:0.9.0.0
@@ -75,7 +72,6 @@ services:
       KAFKA_TOPIC: collect-event
     volumes:
       - tiles:/storage/tiles
-      # - ingesttiles:/storage/ingesttiles
 
   db:
     image: biggis/mariadb:10.1.14
@@ -86,12 +82,24 @@ services:
     # volumes:
     #   - db-data:/opt/mysql
 
+  tomcat:
+    image: biggis/tomcat:8.0.36
+    restart: always
+    hostname: tomcat
+    # depends_on:
+    #   - kafka
+    ports:
+      - "8080:8080"
+    environment:
+      KAFKA_TOPIC: genimg-event
+      TOMCAT_ADMIN: biggis
+      TOMCAT_ADMIN_PASSWORD: biggis
+    volumes:
+      - tiles:/storage/tiles
+
 volumes:
   # zookeeper-data:
   # kafka-data:
   # db-data:
-  # ingesttiles:
-  # normtiles:
-  # hstiles:
   tiles:
   flink-conf:

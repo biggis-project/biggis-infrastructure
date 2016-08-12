@@ -20,6 +20,7 @@ For detailed description please refer to [https://docs.docker.com/](https://docs
 | 3     | [Zookeeper](https://zookeeper.apache.org/) | biggis/zookeeper:3.4.6       | Needed by Kafka for storing configurations, leader election, state.                                                       |
 | 4     | [Flink](https://flink.apache.org/)         | biggis/flink:1.0.3           | Stream processor for pre-analytical jobs, which consumes event streams from Kafka for normalizations and transformations. |
 | 5     | [MariaDB](https://mariadb.org/)            | biggis/mariadb:10.1          | Used for storing tile indices for M3. To be replaced with Exasolution database.                                           |
+| 6     | [Tomcat](http://tomcat.apache.org/)        | biggis/tomcat:8.0.36         | Used for displaying tile/image changes.                                                                                   |
 
 ## Usage
 
@@ -66,9 +67,10 @@ Name                          Command               State                       
 biggispipeline_collector_1     /usr/local/bin/entrypoint. ...   Up      7203/tcp, 9092/tcp
 biggispipeline_db_1            /usr/local/bin/entrypoint. ...   Up      0.0.0.0:3306->3306/tcp
 biggispipeline_jobmanager_1    /usr/local/bin/entrypoint. ...   Up      0.0.0.0:6123->6123/tcp, 0.0.0.0:8081->8081/tcp
-biggispipeline_kafka_1         /usr/local/bin/entrypoint. ...   Up      7203/tcp, 9092/tcp
+biggispipeline_kafka_1         /usr/local/bin/entrypoint. ...   Up      7203/tcp, 0.0.0.0:9092->9092/tcp
 biggispipeline_taskmanager_1   /usr/local/bin/entrypoint. ...   Up
-biggispipeline_zookeeper_1     /usr/local/bin/entrypoint. ...   Up      2181/tcp, 2888/tcp, 3888/tcp
+biggispipeline_tomcat_1        /usr/local/bin/entrypoint. ...   Up      0.0.0.0:8080->8080/tcp
+biggispipeline_zookeeper_1     /usr/local/bin/entrypoint. ...   Up      0.0.0.0:2181->2181/tcp, 2888/tcp, 3888/tcp
 ```
 ![screenshot 2016-07-26 11 12 15](https://cloud.githubusercontent.com/assets/15153294/17132419/f116c4f4-5321-11e6-8790-43a7ffb50fab.png)
 

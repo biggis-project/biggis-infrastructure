@@ -5,3 +5,5 @@ biggis-postgis/
 target/
 *.iml
 .idea/
+gdal-pkg-2.1.0.tar.gz
+gdal-base/
