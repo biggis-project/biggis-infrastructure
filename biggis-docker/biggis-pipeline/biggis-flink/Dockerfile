@@ -1,7 +1,7 @@
 FROM biggis/base:java8-jre-alpine
 
 # Install Flink
-ARG FLINK_VERSION=1.0.3
+ARG FLINK_VERSION=1.1.1
 ARG HADOOP_VERSION=27
 ARG SCALA_VERSION=2.10
 

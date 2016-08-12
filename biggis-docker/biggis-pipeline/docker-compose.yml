@@ -29,7 +29,7 @@ services:
     #   - kafka-data:/tmp/kafka/data
 
   jobmanager:
-    image: biggis/flink:1.0.3
+    image: biggis/flink:1.1.1
     restart: always
     hostname: jobmanager
     depends_on:
@@ -47,7 +47,7 @@ services:
       - flink-conf:/opt/flink/conf
 
   taskmanager:
-    image: biggis/flink:1.0.3
+    image: biggis/flink:1.1.1
     restart: always
     hostname: taskmanager
     depends_on:

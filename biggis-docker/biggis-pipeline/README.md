@@ -18,7 +18,7 @@ For detailed description please refer to [https://docs.docker.com/](https://docs
 | 1     | -                                          | biggis/collector:0.9.0.0     | Inherits from biggis/kafka:0.9.0.0 and uses inotifywait to watch for file creation. This event is pushed to Kafka.        |
 | 2     | [Kafka](http://kafka.apache.org/)          | biggis/kafka:0.9.0.0         | Message Queue for data, information propagation.                                                                          |
 | 3     | [Zookeeper](https://zookeeper.apache.org/) | biggis/zookeeper:3.4.6       | Needed by Kafka for storing configurations, leader election, state.                                                       |
-| 4     | [Flink](https://flink.apache.org/)         | biggis/flink:1.0.3           | Stream processor for pre-analytical jobs, which consumes event streams from Kafka for normalizations and transformations. |
+| 4     | [Flink](https://flink.apache.org/)         | biggis/flink:1.1.1           | Stream processor for pre-analytical jobs, which consumes event streams from Kafka for normalizations and transformations. |
 | 5     | [MariaDB](https://mariadb.org/)            | biggis/mariadb:10.1          | Used for storing tile indices for M3. To be replaced with Exasolution database.                                           |
 | 6     | [Tomcat](http://tomcat.apache.org/)        | biggis/tomcat:8.0.36         | Used for displaying tile/image changes.                                                                                   |
 
@@ -166,15 +166,17 @@ $ make clean
 
 ## M3 Raster-Pipeline: A High-Level Infrastructure Overview
 After building the Docker images with ```make build``` and starting the BigGIS analytical Pipeline ```make up``` you are provided with the following components:
-![highlevel-infrastructure_v2](https://cloud.githubusercontent.com/assets/15153294/17170469/76eedb28-53ec-11e6-8928-15e21f2b7174.png)
+![highlevel-infrastructure_v3](https://cloud.githubusercontent.com/assets/15153294/17623805/32163eca-60a2-11e6-9657-1e16ed9f0ad5.png)
 
 
 As a first PoC, we want to demonstrate an integrated, end-to-end, analytical BigGIS pipeline for a specific use case. Therefore, we are considering performing a [hot spot analysis](https://pro.arcgis.com/de/pro-app/tool-reference/spatial-statistics/h-how-hot-spot-analysis-getis-ord-gi-spatial-stati.htm) on a thermal flight dataset. The workflow of our M3 Raster-Pipeline is as follows:
 
 1. Pre-chopped tiles of thermal flight dataset are dropped sequentially to specific tile directory _/tiles/&lt;id&gt;ingest.tif_ on the Docker Host, which the ```Collector``` container is monitoring via a simple _inotify_ script. Detected changes are fetched, such that when a new tile arrives, a new _collect-event_ is pushed to ```Kafka```. This event contains some metadata information about the file, e.g. _path/to/tile_.
 2. ```Flink``` consists of several individual jobs: the first job consumes the _collect-event_, loads in the raster file and normalizes. Normalized tiles are then stored under _/tiles/&lt;id&gt;norm.tif_ volume on the host and a new event _norm-event_ is pushed out to ```Kafka```. The second job consumes the _norm-event_, takes the normalized tiles and indexes them. These indices are stored in ```DB``` and a new event _idx-event_ is pushed out to ```Kafka```. The third job consumes the _idx-event_, loads the normalized tiles and the corresponding indices and performs a hot spot analysis, using the neighborhood information. The results (z-scores) are pushed in ```DB```, new hot spot raster tiles are stored under _/tiles/&lt;id&gt;hotspot.tif_ and a new event _hs-event_ is pushed to ```Kafka```. The last job consumes the _hs-event_, uses the hot spot raster tiles as well as the z-scores and ranks them accordingly. The resulting dataset contains TopK hot spot (cold spot) locations in the given area, which is again stored in the ```DB```. Eventually, a _topk-event_ is committed to ```Kafka```.
-3. Finally, the creation of a new (part) of raster image is initialized by receiving the _topk-event_, loading the geolocations from ```DB``` and the hot spot tiles from _/tiles/&lt;id&gt;hotspot.tif_.
+3. The creation of a new (part) of raster image is initialized by receiving the _topk-event_, loading the geolocations from ```DB``` and the hot spot tiles from _/tiles/&lt;id&gt;hotspot.tif_.
+4. The newly updated tiles are then mapped together and a hollistic image of a specific area is generated and stored on disk. A new event _genimg-event_ is pushed to ```Kafka```.
+5. Lastly, a Tomcat based web app registers the _genimg-event_, extracts the filesystem path where the newly generated image is stored off the Kafka message and updated the displays this image in a browser. Old images are thus periodically updated.
 
-![pipeline-workflow_v2](https://cloud.githubusercontent.com/assets/15153294/17165227/33b0b72c-53cf-11e6-8186-8cfa3582de60.png)
+![pipeline-workflow_v3](https://cloud.githubusercontent.com/assets/15153294/17623747/e7622c40-60a1-11e6-9dcb-3e6b2fd06aca.png)
 
 ## Work in progess (ToDo)
