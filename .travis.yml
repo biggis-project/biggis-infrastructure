@@ -3,7 +3,7 @@ language: bash
 sudo: required
 
 env:
-  - BASE=biggis/base:alpine-3.4 BASE_JRE=biggis/base:java8-jre-alpine KAFKA=biggis/kafka:0.9.0.0 COLLECTOR=biggis/collector:0.9.0.0 ZOOKEEPER=biggis/zookeeper:3.4.6 FLINK=biggis/flink:1.0.3 MARIADB=biggis/mariadb:10.1.14
+  - BASE=biggis/base:alpine-3.4 BASE_JRE=biggis/base:java8-jre-alpine KAFKA=biggis/kafka:0.9.0.0 COLLECTOR=biggis/collector:0.9.0.0 ZOOKEEPER=biggis/zookeeper:3.4.6 FLINK=biggis/flink:1.0.3 MARIADB=biggis/mariadb:10.1.14 TOMCAT=biggis/tomcat:8.0.36
 
 services:
   - docker
@@ -24,6 +24,7 @@ script:
   - docker build --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` --build-arg VCS_REF=`git rev-parse --short HEAD` -t $ZOOKEEPER biggis-zookeeper
   - docker build --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` --build-arg VCS_REF=`git rev-parse --short HEAD` -t $FLINK biggis-flink
   - docker build --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` --build-arg VCS_REF=`git rev-parse --short HEAD` -t $MARIADB biggis-mariadb
+  - docker build --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` --build-arg VCS_REF=`git rev-parse --short HEAD` -t $TOMCAT biggis-tomcat
 
 after_success:
   - echo "test successful"
@@ -35,3 +36,4 @@ after_success:
   - docker push $ZOOKEEPER
   - docker push $FLINK
   - docker push $MARIADB
+  - docker push $TOMCAT
