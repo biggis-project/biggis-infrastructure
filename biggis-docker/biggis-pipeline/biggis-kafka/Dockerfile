@@ -23,7 +23,7 @@ ENV KAFKA_RELEASE_ARCHIVE kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz
 
 RUN set -x && \
     apk --update add --virtual build-dependencies curl && \
-    curl -s http://apache.openmirror.de/kafka/${KAFKA_VERSION}/${KAFKA_RELEASE_ARCHIVE} | tar -xzf - -C /opt && \
+    curl -s http://mirror.23media.de/apache/kafka/${KAFKA_VERSION}/${KAFKA_RELEASE_ARCHIVE} | tar -xzf - -C /opt && \
     ln -s /opt/kafka_${SCALA_VERSION}-${KAFKA_VERSION} /opt/kafka && \
     mkdir -p /tmp/kafka /tmp/logs && \
     apk del build-dependencies && \
