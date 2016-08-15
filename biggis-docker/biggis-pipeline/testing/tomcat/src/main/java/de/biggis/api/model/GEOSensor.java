@@ -83,7 +83,7 @@ public class GEOSensor {
 
     @Override
     public String toString() {
-        return aid + "/" + sid + "/" + lat + "/" + lon + "/" + alt + "/" + epoch + "/" + temp + "/" + humid;
+        return aid + "," + sid + "," + lat + "," + lon + "," + alt + "," + epoch + "," + temp + "," + humid;
     }
 
 }

@@ -1,13 +1,14 @@
 package de.biggis.api.controller;
 
 import de.biggis.api.model.GEOSensor;
-import de.biggis.api.service.CSVFileWriter;
-import de.biggis.api.service.KafkaProducer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.slf4j.LoggerFactory;
+import de.biggis.api.service.SimpleKafkaProducer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.io.IOException;
 import java.math.BigDecimal;
 
 /**
@@ -17,15 +18,17 @@ import java.math.BigDecimal;
  *
  */
 @Path("v1")
-public class RESTfulService {
+public class RESTService {
 
-    // KafkaProducer kafkaProducer = new KafkaProducer();
-    // CSVFileWriter csvFileWriter = new CSVFileWriter();
+    SimpleKafkaProducer producer = new SimpleKafkaProducer();
 
-    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(RESTfulService.class);
+    private static final Logger LOG = LogManager.getLogger(RESTService.class);
     private static final GsonBuilder gsonBuilder = new GsonBuilder();
-    private static final String GEO_SENSOR_TOPIC_NAME = "geosensors";
+    private static final String KAFKA_TOPIC = "api";
     private static final String OUTPUT_FILE_PATH = "/opt/geosensors.csv";
+
+    public RESTService() throws IOException {
+    }
 
     /**
      * @GET              Retrieves geo sensor data from database
@@ -123,9 +126,8 @@ public class RESTfulService {
         geosensor.setTemp(temp);
         geosensor.setHumid(humid);
 
-        // csvFileWriter.writeToCSV(OUTPUT_FILE_PATH, geosensor.toString());
         //LOG.info(geosensor.toString());
-        // kafkaProducer.sendMessage(GEO_SENSOR_TOPIC_NAME, geosensor.toString());
+        producer.produce(KAFKA_TOPIC, geosensor.toString());
 
         Gson gson = gsonBuilder.serializeNulls().setPrettyPrinting().create();
 
