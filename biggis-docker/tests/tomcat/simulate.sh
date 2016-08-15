@@ -23,7 +23,7 @@ while [  $COUNTER -lt $MAX ]; do
    selectedHUMID=${humid[$RANDOM % ${#humid[@]} ]}
    epoch=$(date +%s)
 
-   curl -X POST "http://192.168.99.100:8080/api/v1/geosensors?aid=$selectedAID&sid=$selectedSID&epoch=$epoch&temp=$selectedTEMP&humid=$selectedHUMID"
+   curl -X POST "http://$3:8080/api/v1/geosensors?aid=$selectedAID&sid=$selectedSID&epoch=$epoch&temp=$selectedTEMP&humid=$selectedHUMID"
 
    let COUNTER=COUNTER+1
    sleep $SLEEP
