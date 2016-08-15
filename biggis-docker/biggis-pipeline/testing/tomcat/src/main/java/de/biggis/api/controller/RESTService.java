@@ -25,7 +25,6 @@ public class RESTService {
     private static final Logger LOG = LogManager.getLogger(RESTService.class);
     private static final GsonBuilder gsonBuilder = new GsonBuilder();
     private static final String KAFKA_TOPIC = "api";
-    private static final String OUTPUT_FILE_PATH = "/opt/geosensors.csv";
 
     public RESTService() throws IOException {
     }
