@@ -16,7 +16,7 @@ LABEL eu.biggis-project.build-date=$BUILD_DATE \
       eu.biggis-project.environment="dev" \
       eu.biggis-project.version=$KAFKA_VERSION
 
-RUN apk add --no-cache inotify-tools expect perl-io-tee@testing
+RUN apk add --no-cache inotify-tools expect perl-io-tee@community
 
 RUN mkdir /opt/collector
 ADD collector-daemon.sh /opt/collector
