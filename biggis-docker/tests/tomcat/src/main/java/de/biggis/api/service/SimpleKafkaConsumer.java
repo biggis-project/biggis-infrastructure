@@ -45,6 +45,8 @@ public class SimpleKafkaConsumer extends Thread {
 		this.pw = new PrintWriter(new FileOutputStream(
 				Paths.get(System.getProperty("java.io.tmpdir"), "kafka_consumer.log").toString(), false));
 
+		pw.println("Started Kafka Consumer Thread");
+
 		this.topics = topics;
 	}
 
