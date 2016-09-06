@@ -71,6 +71,12 @@
 
 
 
+	<!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-servlet-api -->
+	<dependency>
+	    <groupId>org.apache.tomcat</groupId>
+	    <artifactId>tomcat-servlet-api</artifactId>
+	    <version>8.0.36</version>
+	</dependency>
 
   </dependencies>
 
