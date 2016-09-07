@@ -47,6 +47,8 @@ public class SimpleKafkaConsumer extends Thread {
 
 		pw.println("Started Kafka Consumer Thread");
 
+		pw.flush();
+
 		this.topics = topics;
 	}
 
@@ -57,11 +59,15 @@ public class SimpleKafkaConsumer extends Thread {
 
 			while (!shutdown) {
 				ConsumerRecords<String, String> records = consumer.poll(100);
-				for (ConsumerRecord<String, String> record : records)
-					// System.out.printf();
+				for (ConsumerRecord<String, String> record : records) {
 					pw.printf("topic = %s, offset = %d, key = %s, value = %s%n", record.topic(), record.offset(),
 							record.key(), record.value());
+				}
+				// System.out.printf();
+
+				pw.flush();
 			}
+
 		} finally {
 			consumer.close();
 			pw.close();
