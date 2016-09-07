@@ -13,6 +13,14 @@ public class KafkaConsumerServletContextListener implements ServletContextListen
 
 	@Override
 	public void contextDestroyed(ServletContextEvent arg0) {
+		try {
+			myThread.shutdown();
+		} catch (Exception ex) {
+		}
+	}
+
+	@Override
+	public void contextInitialized(ServletContextEvent arg0) {
 		if ((myThread == null) || (!myThread.isAlive())) {
 			try {
 				myThread = new SimpleKafkaConsumer("test");
@@ -20,14 +28,6 @@ public class KafkaConsumerServletContextListener implements ServletContextListen
 				e.printStackTrace();
 			}
 			myThread.start();
-		}
-	}
-
-	@Override
-	public void contextInitialized(ServletContextEvent arg0) {
-		try {
-			myThread.shutdown();
-		} catch (Exception ex) {
 		}
 	}
 
