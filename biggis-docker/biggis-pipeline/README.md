@@ -37,7 +37,7 @@ Besides, if you want to interact with the Kafka container from external sources,
 # docker-machine ip <name-of-machine>
 #
 # On native Linux:
-# ip route get 1 | awk '{print $NF;exit}
+# ip route get 1 | awk '{print $NF;exit}'
 KAFKA_ADVERTISED_HOST_NAME: <DOCKER_HOST_IP>
 ```
 
