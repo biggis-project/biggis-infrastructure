@@ -30,7 +30,7 @@ Import the Maven project under _tests/flink_ in your IDE. You will find three Fl
 ```Java
 /**
 * This is a valid input example:
-* 		--topic test --bootstrap.servers 192.168.99.100:9092 --zookeeper.connect 192.168.99.100:2181 --group.id myGroup
+* 		--topic test --bootstrap.servers 192.168.99.100:9092 --group.id myGroup
 *
 */
 public class ReadFromKafka {
