@@ -25,7 +25,6 @@ import com.google.common.io.Resources;
  */
 public class SimpleKafkaConsumer extends Thread {
 
-	private static final Logger LOG = LogManager.getLogger(SimpleKafkaConsumer.class);
 	public static final String CONSUMER_CONFIG = "consumer.properties";
 
 	private Consumer<String, String> consumer;
@@ -56,7 +55,7 @@ public class SimpleKafkaConsumer extends Thread {
 	public void run() {
 		try {
 			consumer.subscribe(Arrays.asList(topics));
-			pw.println("Started listening to topics "+Arrays.toString(topics));
+			pw.println("Started listening to topics " + Arrays.toString(topics));
 			pw.flush();
 			while (!shutdown) {
 				ConsumerRecords<String, String> records = consumer.poll(100);
