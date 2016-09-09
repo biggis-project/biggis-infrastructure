@@ -44,7 +44,7 @@
 
 	<servlet-mapping>
 		<servlet-name>kafka-consumer-servlet</servlet-name>
-		<url-pattern>/*</url-pattern>
+		<url-pattern>/biggis/*</url-pattern>
 	</servlet-mapping>
 
 </web-app>
