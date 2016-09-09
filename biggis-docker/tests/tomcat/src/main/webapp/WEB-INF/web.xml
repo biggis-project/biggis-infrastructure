@@ -42,7 +42,7 @@
 	</servlet>
 
 	<servlet-mapping>
-		<servlet-name>jersey-serlvet</servlet-name>
+		<servlet-name>kafka-consumer-servlet</servlet-name>
 		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
 
