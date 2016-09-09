@@ -6,6 +6,7 @@
 
 	<display-name>RESTful Web Application</display-name>
 
+
 	<listener>
 		<listener-class>
 			de.biggis.api.service.KafkaConsumerServletContextListener
