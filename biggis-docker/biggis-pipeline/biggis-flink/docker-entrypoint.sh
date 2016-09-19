@@ -30,6 +30,12 @@ elif [ "$1" = "taskmanager" ]; then
     echo "config file: " && grep '^[^\n#]' $FLINK_HOME/conf/flink-conf.yaml
     $FLINK_HOME/bin/taskmanager.sh start
 
+elif [ "$1" = "taskmanager-mesos" ]; then
+    echo "Starting Task Manager"
+    sed -i -e "s/jobmanager.rpc.address: localhost/jobmanager.rpc.address: flink-jobmanager.marathon.mesos/g" $FLINK_HOME/conf/flink-conf.yaml
+    echo "config file: " && grep '^[^\n#]' $FLINK_HOME/conf/flink-conf.yaml
+    $FLINK_HOME/bin/taskmanager.sh start
+
 else
     $@
 fi
