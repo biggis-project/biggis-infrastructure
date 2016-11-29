@@ -9,7 +9,7 @@ if [ "$1" = "jobmanager" ]; then
 
 # used for running flink on docker swarm 1.12
 # only tested with 1 jobmanager setup
-elif ["$1" = "jobmanager-swarm" ]; then
+elif [ "$1" = "jobmanager-swarm" ]; then
     echo "Starting Job Manager"
     # making use of docker swarms internal dns service
     sed -i -e "s/jobmanager.rpc.address: .*/jobmanager.rpc.address: tasks.jobmanager/g" $FLINK_HOME/conf/flink-conf.yaml
@@ -18,7 +18,7 @@ elif ["$1" = "jobmanager-swarm" ]; then
 
 # used for running flink on docker swarm 1.12
 # only tested with 1 jobmanager setup
-elif ["$1" = "jobmanager-mesos" ]; then
+elif [ "$1" = "jobmanager-mesos" ]; then
     echo "Starting Job Manager"
     # making use of docker swarms internal dns service
     sed -i -e "s/jobmanager.rpc.address: .*/jobmanager.rpc.address: jobmanager.marathon.mesos/g" $FLINK_HOME/conf/flink-conf.yaml
