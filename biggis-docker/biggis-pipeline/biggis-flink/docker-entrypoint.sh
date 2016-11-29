@@ -20,22 +20,28 @@
 
 if [ "$1" = "jobmanager" ]; then
     echo "Starting Job Manager"
-    sed -i -e "s/jobmanager.rpc.address: localhost/jobmanager.rpc.address: `hostname -i`/g" $FLINK_HOME/conf/flink-conf.yaml
-    sed -i -e "s/taskmanager.numberOfTaskSlots: 1/taskmanager.numberOfTaskSlots: `grep -c ^processor /proc/cpuinfo`/g" $FLINK_HOME/conf/flink-conf.yaml
+    # making use of docker to resolve container name
+    sed -i -e "s/jobmanager.rpc.address: .*/jobmanager.rpc.address: jobmanager/g" $FLINK_HOME/conf/flink-conf.yaml
     echo "config file: " && grep '^[^\n#]' $FLINK_HOME/conf/flink-conf.yaml
     $FLINK_HOME/bin/jobmanager.sh start cluster
 
 elif [ "$1" = "taskmanager" ]; then
     echo "Starting Task Manager"
+
+    # making use of docker to resolve container name
+    sed -i -e "s/jobmanager.rpc.address: .*/jobmanager.rpc.address: jobmanager/g" $FLINK_HOME/conf/flink-conf.yaml
+    sed -i -e "s/taskmanager.numberOfTaskSlots: 1/taskmanager.numberOfTaskSlots: `grep -c ^processor /proc/cpuinfo`/g" $FLINK_HOME/conf/flink-conf.yaml
     echo "config file: " && grep '^[^\n#]' $FLINK_HOME/conf/flink-conf.yaml
     $FLINK_HOME/bin/taskmanager.sh start
 
-elif [ "$1" = "taskmanager-mesos" ]; then
-    echo "Starting Task Manager"
-    sed -i -e "s/jobmanager.rpc.address: localhost/jobmanager.rpc.address: flink-jobmanager.marathon.mesos/g" $FLINK_HOME/conf/flink-conf.yaml
-    echo "config file: " && grep '^[^\n#]' $FLINK_HOME/conf/flink-conf.yaml
-    $FLINK_HOME/bin/taskmanager.sh start
-
-else
+# this was used for a small test to try running Flink via Marathon on Mesos 
+#
+# elif [ "$1" = "taskmanager-mesos" ]; then
+#     echo "Starting Task Manager"
+#     sed -i -e "s/jobmanager.rpc.address: localhost/jobmanager.rpc.address: jobmanager/g" $FLINK_HOME/conf/flink-conf.yaml
+#     echo "config file: " && grep '^[^\n#]' $FLINK_HOME/conf/flink-conf.yaml
+#     $FLINK_HOME/bin/taskmanager.sh start
+#
+# else
     $@
 fi
