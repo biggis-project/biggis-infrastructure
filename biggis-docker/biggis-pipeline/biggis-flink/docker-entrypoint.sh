@@ -42,6 +42,7 @@ elif [ "$1" = "taskmanager" ]; then
 #     echo "config file: " && grep '^[^\n#]' $FLINK_HOME/conf/flink-conf.yaml
 #     $FLINK_HOME/bin/taskmanager.sh start
 #
-# else
+
+else
     $@
 fi
