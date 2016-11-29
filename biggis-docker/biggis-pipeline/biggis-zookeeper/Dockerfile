@@ -19,7 +19,7 @@ LABEL eu.biggis-project.build-date=$BUILD_DATE \
 
 RUN set -x && \
     apk --update add --virtual build-dependencies curl && \
-    curl -s http://apache.mirrors.pair.com/zookeeper/zookeeper-$ZK_VERSION/zookeeper-$ZK_VERSION.tar.gz | tar -xzf - -C /opt && \
+    curl -s http://ftp.fau.de/apache/zookeeper/zookeeper-$ZK_VERSION/zookeeper-$ZK_VERSION.tar.gz | tar -xzf - -C /opt && \
     ln -s /opt/zookeeper-$ZK_VERSION /opt/zookeeper && \
     cp /opt/zookeeper/conf/zoo_sample.cfg /opt/zookeeper/conf/zoo.cfg && \
     sed -i -e "s/dataDir=\/tmp\/zookeeper/dataDir=\/tmp\/zookeeper\/data/g" /opt/zookeeper/conf/zoo.cfg && \
