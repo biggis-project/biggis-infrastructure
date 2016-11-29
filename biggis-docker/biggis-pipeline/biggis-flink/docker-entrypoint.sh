@@ -34,7 +34,7 @@ elif [ "$1" = "taskmanager" ]; then
     echo "config file: " && grep '^[^\n#]' $FLINK_HOME/conf/flink-conf.yaml
     $FLINK_HOME/bin/taskmanager.sh start
 
-# this was used for a small test to try running Flink via Marathon on Mesos 
+# this was used for a small test to try running Flink via Marathon on Mesos
 #
 # elif [ "$1" = "taskmanager-mesos" ]; then
 #     echo "Starting Task Manager"
