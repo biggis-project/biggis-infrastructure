@@ -18,7 +18,7 @@ For detailed description please refer to [https://docs.docker.com/](https://docs
 | 1     | -                                          | biggis/collector:0.9.0.0     | Inherits from biggis/kafka:0.9.0.0 and uses inotifywait to watch for file creation. This event is pushed to Kafka.        |
 | 2     | [Kafka](http://kafka.apache.org/)          | biggis/kafka:0.9.0.0         | Message Queue for data, information propagation.                                                                          |
 | 3     | [Zookeeper](https://zookeeper.apache.org/) | biggis/zookeeper:3.4.6       | Needed by Kafka for storing configurations, leader election, state.                                                       |
-| 4     | [Flink](https://flink.apache.org/)         | biggis/flink:1.1.1           | Stream processor for pre-analytical jobs, which consumes event streams from Kafka for normalizations and transformations. |
+| 4     | [Flink](https://flink.apache.org/)         | biggis/flink:1.1.3           | Stream processor for pre-analytical jobs, which consumes event streams from Kafka for normalizations and transformations. |
 | 5     | [MariaDB](https://mariadb.org/)            | biggis/mariadb:10.1          | Used for storing tile indices for M3. To be replaced with Exasolution database.                                           |
 | 6     | [Tomcat](http://tomcat.apache.org/)        | biggis/tomcat:8.0.36         | Used for displaying tile/image changes.                                                                                   |
 

@@ -3,7 +3,7 @@ language: bash
 sudo: required
 
 env:
-  - BASE=biggis/base:alpine-3.4 BASE_JRE=biggis/base:java8-jre-alpine KAFKA=biggis/kafka:0.9.0.0 COLLECTOR=biggis/collector:0.9.0.0 ZOOKEEPER=biggis/zookeeper:3.4.6 FLINK=biggis/flink:1.1.1 MARIADB=biggis/mariadb:10.1.14 TOMCAT=biggis/tomcat:8.0.36
+  - BASE=biggis/base:alpine-3.4 BASE_JRE=biggis/base:java8-jre-alpine KAFKA=biggis/kafka:0.9.0.0 COLLECTOR=biggis/collector:0.9.0.0 ZOOKEEPER=biggis/zookeeper:3.4.6 FLINK=biggis/flink:1.1.3 MARIADB=biggis/mariadb:10.1.19 TOMCAT=biggis/tomcat:8.0.36
 
 services:
   - docker
