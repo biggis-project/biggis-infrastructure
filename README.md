@@ -1,11 +1,12 @@
 # BigGIS infrastructure
 
 ### Current Container environment
-[![Build Status](https://travis-ci.org/biggis-project/biggis-base.svg?branch=master)][Travis][Travis]: https://travis-ci.org/biggis-project/biggis-base [biggis-base](https://github.com/biggis-project/biggis-base)
-[![Build Status](https://travis-ci.org/biggis-project/biggis-kafka.svg?branch=master)][Travis][Travis]: https://travis-ci.org/biggis-project/biggis-kafka [biggis-kafka](https://github.com/biggis-project/biggis-kafka)
-[![Build Status](https://travis-ci.org/biggis-project/biggis-zookeeper.svg?branch=master)][Travis][Travis]: https://travis-ci.org/biggis-project/biggis-zookeeper [biggis-zookeeper](https://github.com/biggis-project/biggis-zookeeper)
-[![Build Status](https://travis-ci.org/biggis-project/biggis-flink.svg?branch=master)][Travis][Travis]: https://travis-ci.org/biggis-project/biggis-flink [biggis-flink](https://github.com/biggis-project/biggis-flink)
-[![Build Status](https://travis-ci.org/biggis-project/biggis-tomcat.svg?branch=master)][Travis][Travis]: https://travis-ci.org/biggis-project/biggis-tomcat [biggis-tomcat](https://github.com/biggis-project/biggis-tomcat)
+
+* [![Build Status](https://api.travis-ci.org/biggis-project/biggis-base.svg)](https://travis-ci.org/biggis-project/biggis-base) [jre 8 alpine](https://github.com/biggis-project/biggis-base)
+* [![Build Status](https://api.travis-ci.org/biggis-project/biggis-kafka.svg)](https://travis-ci.org/biggis-project/biggis-kafka) [kafka 0.9.0.0](https://github.com/biggis-project/biggis-kafka)
+* [![Build Status](https://api.travis-ci.org/biggis-project/biggis-zookeeper.svg)](https://travis-ci.org/biggis-project/biggis-zookeeper) [zookeeper 3.4.6](https://github.com/biggis-project/biggis-zookeeper)
+* [![Build Status](https://api.travis-ci.org/biggis-project/biggis-base.svg)](https://travis-ci.org/biggis-project/biggis-flink) [flink 1.1.3](https://github.com/biggis-project/biggis-flink)
+* [![Build Status](https://api.travis-ci.org/biggis-project/biggis-tomcat.svg)](https://travis-ci.org/biggis-project/biggis-tomcat) [tomcat 8.0.36](https://github.com/biggis-project/biggis-tomcat)
 
 ## BigGIS demos
 Docker based analytical BigGIS pipeline for demos, milestones, PoC's.
