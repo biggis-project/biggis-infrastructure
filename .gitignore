@@ -2,6 +2,8 @@
 playbook.retry
 .DS_Store
 biggis-postgis/
+biggis-mariadb/
+biggis-collector/
 target/
 *.iml
 .idea/
