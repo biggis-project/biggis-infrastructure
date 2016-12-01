@@ -1,9 +1,0 @@
----
-  - hosts: [mesos_slaves]
-    remote_user: vagrant
-    become: yes
-    become_method: sudo
-    roles:
-      - { role: 'roles/java8/' }
-      - { role: 'roles/docker/' }
-      - { role: 'roles/mesos/', mesos_containerizers: "docker,mesos", mesos_install_mode: "slave", zookeeper_hostnames: "{{ groups.mesos_masters | join(':' + zookeeper_client_port + ',') }}:{{ zookeeper_client_port }}" }

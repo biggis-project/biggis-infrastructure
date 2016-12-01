@@ -1,7 +1,0 @@
----
-  build_user: "{{ ansible_ssh_user }}"
-  build_directory: "/home/{{ build_user }}/sources"
-  java_version: 8
-  java_subversion: 74
-
-  oracle_java_home: "/usr/java/jdk1.{{ java_version }}.0_{{ java_subversion }}"

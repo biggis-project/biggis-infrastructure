@@ -1,3 +1,0 @@
----
-  - name: Restart marathon
-    service: name=marathon state=restarted enabled=yes

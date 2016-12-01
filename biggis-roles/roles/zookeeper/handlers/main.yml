@@ -1,4 +1,0 @@
-# Handlers for Zookeeper
----
-- name: Restart zookeeper
-  service: name=zookeeper state=restarted
