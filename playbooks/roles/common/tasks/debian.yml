@@ -1,0 +1,79 @@
+# tasks file for common
+---
+  - name: Set locale
+    command: locale-gen de_DE.UTF-8
+    tags:
+      - common
+
+  - name: generate /etc/hosts file
+    template:
+      src: hosts.j2
+      dest: /etc/hosts
+    tags:
+      - common
+
+  # Check for build user group
+  - name: Check that build user group exists
+    group:
+      name: "{{ build_user_group }}"
+      state: present
+    tags:
+      - common
+
+  # Check for build user
+  - name: Check that build user exists
+    user:
+      name: "{{ build_user }}"
+      group: "{{ build_user_group }}"
+      state: present
+    changed_when: false
+    tags:
+      - common
+
+  # Check for build directory
+  - name: Check that build directory exists
+    file:
+      path: "{{ build_directory }}"
+      state: directory
+      mode: 0755
+      owner: "{{ build_user }}"
+      group: "{{ build_user_group }}"
+    tags:
+      - common
+
+  - name: Check if there are packages available to be installed/upgraded
+    command: /usr/lib/update-notifier/apt-check --package-names
+    register: packages
+
+  - name: Upgrade all packages to the latest version
+    apt: update_cache=yes upgrade=dist
+    when: packages.stderr != ""
+
+  - name: Check if a reboot is required
+    command: /bin/true removes=/var/run/reboot-required
+    notify:
+      - reboot_server
+      - wait_for_server
+    tags:
+      - common
+
+  # Immediately flush handlers when kernel is updated
+  # Default: handlers get executed at the end of a play
+  - meta: flush_handlers
+
+
+  # Install system tools
+  - name: Install useful system tools
+    apt: pkg={{ item }} state=present update_cache=yes
+    with_items:
+      - htop
+      - tmux
+      - wget
+      - curl
+      - git
+      - tar
+      - unzip
+      - python-setuptools
+      - python-dev
+    tags:
+      - common

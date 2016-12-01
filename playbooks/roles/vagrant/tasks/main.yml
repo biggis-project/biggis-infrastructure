@@ -1,0 +1,13 @@
+# tasks file for Vagrant
+---
+  # Check if Vagrant is already installed
+  - name: Check if vagrant rpm file already exists
+    shell: PACKAGE_INSTALLED=`rpm -qa | grep vagrant*`; if [ "$PACKAGE_INSTALLED" != '' ] ; then echo 'installed'; else echo 'download'; fi
+    register: rpm_check
+    failed_when: rpm_check.rc > 1
+    changed_when: rpm_check.stdout.find('download') != -1
+
+  # Download and install Vagrant for Centos/RHEL version Centos7
+  - name: Download Vagrant
+    yum: name={{ vagrant_rpm_package_url }} state=present
+    when: rpm_check.stdout.find('download') != -1

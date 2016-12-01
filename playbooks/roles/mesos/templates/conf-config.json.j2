@@ -1,0 +1,33 @@
+{
+  "zk": "zk://{% set comma = joiner(",") %}
+{% for item in groups['mesos_masters'] -%}
+    {{ comma() }}{{ hostvars[item].ansible_default_ipv4.address }}:{{ zookeeper_client_port }}
+{%- endfor %}/mesos",
+  "masters": [{% set comma = joiner(",") %}
+{% for item in groups['mesos_masters'] -%}
+    {{ comma() }} "{{ hostvars[item].ansible_default_ipv4.address }}:{{ mesos_master_port }}"
+{%- endfor %}],
+  "stateTimeoutSeconds": 300,
+  "refreshSeconds": 60,
+  "ttl": 60,
+  "domain": "{{ mesos_dns_domain }}",
+  "ns": "ns1",
+  "port": 53,
+  "resolvers": ["141.3.175.65", "141.3.175.66"],
+  "timeout": 5,
+  "listener": "0.0.0.0",
+  "SOAMname": "ns1.mesos",
+  "SOARname": "root.ns1.mesos",
+  "SOARefresh": 60,
+  "SOARetry":   600,
+  "SOAExpire":  86400,
+  "SOAMinttl": 60,
+  "dnson": true,
+  "httpon": true,
+  "httpport": 8123,
+  "externalon": true,
+  "recurseon": true,
+  "IPSources": ["netinfo", "mesos", "host"],
+  "EnforceRFC952": false,
+  "EnumerationOn": true
+}

@@ -1,0 +1,19 @@
+---
+  # - hosts: [mesos_masters]
+  #   remote_user: ubuntu
+  #   become: yes
+  #   become_method: sudo
+  #   tasks:
+      # - debug: msg="{{ hostvars[item]['ansible_eth0']['ipv4']['address'] }}"
+      #   with_items:
+      #     - "{{ groups['mesos_masters'] }}"
+  - hosts: all
+    remote_user: ubuntu
+    tasks:
+      - debug:
+          # Comma-separated string of all ip4 addresses of hosts
+          msg: |
+            ZK="zk://{% set comma = joiner(",")%}
+            {% for item in groups['mesos_masters'] -%}
+                {{ comma() }}{{ hostvars[item].ansible_default_ipv4.address }}:2181"
+            {%- endfor %}/mesos"

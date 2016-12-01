@@ -1,0 +1,10 @@
+# {{ansible_managed}}
+
+CLUSTER="{{ mesos_cluster_name }}"
+IP="{{ mesos_ip }}"
+LOGS="{{ mesos_log_dir }}"
+ULIMIT="{{ mesos_ulimit }}"
+ZK="zk://{% set comma = joiner(",") %}
+{% for item in groups['mesos_masters'] -%}
+    {{ comma() }}{{ hostvars[item].ansible_default_ipv4.address }}:{{ zookeeper_client_port }}
+{%- endfor %}/mesos"

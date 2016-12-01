@@ -1,0 +1,4 @@
+---
+  - include: common.yml
+  - include: mesos-masters.yml
+  - include: mesos-slaves.yml

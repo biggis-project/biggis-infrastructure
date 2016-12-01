@@ -1,0 +1,19 @@
+# handlers file for Docker
+---
+  # Reboot server in case of kernel update
+  - name: reboot_server
+    shell: sleep 2 && shutdown -r now "Ansible updates triggered"
+    async: 1
+    poll: 0
+    ignore_errors: true
+
+  # Wait for server to reboot
+  - name: wait_for_server
+    local_action:
+      wait_for
+      host={{ inventory_hostname }}
+      port=22
+      state=started
+      delay=30
+      timeout=300
+    become: no

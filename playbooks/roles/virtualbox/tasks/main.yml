@@ -1,0 +1,97 @@
+# tasks file for VirtualBox
+# installation process according to
+# https://www.if-not-true-then-false.com/2010/install-virtualbox-with-yum-on-fedora-centos-red-hat-rhel/
+---
+  # Download VirtualBox RHEL Repo Files
+  - name: Add VirtualBox repo
+    get_url: url={{ virtualbox_repo_url }} dest={{ yum_repo_path }} mode=0440
+    when: "ansible_os_family == 'RedHat' and ansible_distribution_major_version == '7'"
+
+  # Update latest packages
+  - name: Update packages
+    yum: name="*" state="latest"
+    when: "ansible_os_family == 'RedHat' and ansible_distribution_major_version == '7'"
+
+  # # Check if kernel version is up to date
+  # - name: Check for kernel version
+  #   shell: LAST_KERNEL=`rpm -qa kernel | sort -V | tail -n 1 | sed 's/.*kernel-//'`; CURRENT_KERNEL=`uname -r`; if [ $LAST_KERNEL != $CURRENT_KERNEL ]; then echo 'reboot'; else echo 'no'; fi
+  #   ignore_errors: true
+  #   register: reboot_hint
+  #   changed_when: reboot_hint.stdout.find("reboot") != -1
+  #   notify:
+  #     - reboot_server
+  #     - wait_for_server
+  #   when: "ansible_os_family == 'RedHat' and ansible_distribution_major_version == '7'"
+  #
+  # # Immediately flush handlers when kernel is updated
+  # # Default: handlers get executed at the end of a play
+  # - meta: flush_handlers
+
+  # Bug when executing second time
+  # https://github.com/ansible/ansible-modules-core/issues/3066
+  # - name: install epel repo
+  #   yum:
+  #     name: "{{ epel_repo_url }}"
+  #     state: present
+  #
+  # - name: import epel gpg key
+  #   rpm_key:
+  #     key: "{{ epel_repo_gpg_key_path }}"
+  #     state: present
+
+  # # Check if EPEL is already available
+  # - name: Check for EPEL
+  #   stat: path={{ yum_repo_path }}epel.repo
+  #   register: epel_check
+  #
+  # # Download and install EPEL for Centos/RHEL version 7
+  # - name: Download EPEL Repo - Centos/RHEL 7
+  #   get_url: url={{ epel_repo_url }} dest={{ build_directory }}
+  #   when: "epel_check.stat.exists == false and ansible_os_family == 'RedHat' and ansible_distribution_major_version == '7'"
+  #
+  # - name: Install EPEL Repo - Centos/RHEL 7
+  #   command: rpm -ivh {{ build_directory }} creates={{ yum_repo_path }}/epel.repo
+  #   when: "epel_check.stat.exists == false and ansible_os_family == 'RedHat' and ansible_distribution_major_version == '7'"
+
+  # Download and install dependency packages for Centos/RHEL version 7
+  - name: Install dependencies
+    yum: name={{ item }} state=present
+    with_items:
+      - binutils
+      - gcc
+      - make
+      - patch
+      - libgomp
+      - glibc-headers
+      - glibc-devel
+      - kernel-headers
+      - kernel-devel
+      - dkms
+    when: "ansible_os_family == 'RedHat' and ansible_distribution_major_version == '7'"
+
+  # Download and install VirtualBox Latest Version for Centos/RHEL version 7
+  - name: Install VirtualBox
+    yum: name={{ virtualbox_rpm_package }} state=present
+    when: "ansible_os_family == 'RedHat' and ansible_distribution_major_version == '7'"
+
+  # Running kernel version
+  - name: register running kernel version
+    command: uname -r
+    register: running_kernel
+    changed_when: false
+
+  # Check if kernel modules already exist
+  - name: Check for kernel modules
+    stat: path="/lib/modules/{{ running_kernel.stdout }}/extra/vboxdrv.ko"
+    register: modules_check
+
+  # Rebuild kernel modules
+  - name: Rebuild kernel modules
+    command: /usr/lib/virtualbox/vboxdrv.sh setup
+    become: yes
+    become_method: sudo
+    when: "modules_check.stat.exists == false and ansible_os_family == 'RedHat' and ansible_distribution_major_version == '7'"
+
+  # Add connected user (via ssh) to vboxusers group
+  - name: Add VirtualBox user(s) to user groups
+    user: name={{ build_user }} group=vboxusers

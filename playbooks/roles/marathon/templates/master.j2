@@ -1,0 +1,4 @@
+zk://{% set comma = joiner(",") %}
+{% for item in groups['mesos_masters'] -%}
+    {{ comma() }}{{ hostvars[item].ansible_default_ipv4.address }}:{{ zookeeper_client_port }}
+{%- endfor %}/mesos

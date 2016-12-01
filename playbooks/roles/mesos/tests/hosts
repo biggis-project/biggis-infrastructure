@@ -1,0 +1,5 @@
+[vagrantbox]
+biggis.dev.net.node1 zoo_id=1
+
+[vagrantbox:vars]
+iface=enp0s8

@@ -1,0 +1,9 @@
+---
+- include: debian.yml
+  when: ansible_os_family == 'Debian'
+
+- include: redhat.yml
+  when: ansible_os_family == 'RedHat'
+
+- include: mesos-dns.yml
+  when: mesos_dns_install == "true"

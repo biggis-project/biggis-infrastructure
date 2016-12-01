@@ -1,0 +1,4 @@
+[vagrantbox]
+biggis.dev.net.node1 zoo_id=1
+biggis.dev.net.node2 zoo_id=2
+biggis.dev.net.node3 zoo_id=3

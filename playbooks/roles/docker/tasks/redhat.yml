@@ -1,0 +1,85 @@
+# tasks file for Docker
+# installation process according to
+# https://docs.docker.com/engine/installation/linux/centos/
+---
+ # Update latest packages
+  - name: Update packages
+    yum:
+      name: "*"
+      state: latest
+    tags:
+      - docker
+
+  # Check if kernel version is up to date
+  - name: Check for kernel version
+    shell: LAST_KERNEL=`rpm -qa kernel | sort -V | tail -n 1 | sed 's/.*kernel-//'`; CURRENT_KERNEL=`uname -r`; if [ $LAST_KERNEL != $CURRENT_KERNEL ]; then echo 'reboot'; else echo 'no'; fi
+    ignore_errors: true
+    register: reboot_hint
+    changed_when: reboot_hint.stdout.find("reboot") != -1
+    notify:
+      - reboot_server
+      - wait_for_server
+    tags:
+      - docker
+
+  # Immediately flush handlers when kernel is updated
+  # Default: handlers get executed at the end of a play
+  - meta: flush_handlers
+
+  # Install Docker installation script
+  # This script adds the docker.repo repository and installs Docker
+  - name: Install Docker
+    shell: curl -fsSL https://get.docker.com/ | sh
+    changed_when: false
+    tags:
+      - docker
+
+  # We must install pip via apt before we can use the pip module below
+  - name: Install pip, python-dev package with apt
+    yum:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - python-pip
+      - python-devel
+
+  # Upgrade pip with pip to fix angstwad/docker.ubuntu/pull/35 and docker-py/issues/525
+  # Install latest version when no specific release is set.
+  - name: Upgrade latest pip, setuptools, docker-py and docker-compose with pip
+    pip:
+      name: "{{ item.name }}"
+      state: latest
+    with_items:
+      - { name: pip, version: "latest", install: "true" }
+      - { name: setuptools, version: "latest", install: "true" }
+      - { name: docker-compose, version: "latest", install: "true" }
+    ignore_errors: yes
+
+
+  # Add Docker group
+  - name: Add Docker group
+    group:
+      name: docker
+      state: present
+    tags:
+      - docker
+
+  # Add {{ ansible_ssh_user }} (i.e. current user) to Docker group
+  - name: Add user to Docker group
+    user:
+      name: "{{ ansible_ssh_user }}"
+      group: docker
+    changed_when: false
+    tags:
+      - docker
+
+  # Start Docker daemon
+  - name: Start Docker service
+    service:
+      name: docker
+      state: started
+      enabled: yes
+    become: yes
+    become_method: sudo
+    tags:
+      - docker

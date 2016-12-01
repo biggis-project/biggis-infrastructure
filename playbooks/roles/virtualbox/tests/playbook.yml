@@ -1,0 +1,9 @@
+# test file for virtualbox
+---
+- hosts: vagrantbox
+  remote_user: vagrant
+  become: yes
+  become_method: sudo
+  roles:
+    - ../../common/
+    - ../../

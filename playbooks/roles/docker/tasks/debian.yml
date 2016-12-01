@@ -1,0 +1,60 @@
+---
+
+  - name: Add GPG key
+    apt_key:
+      id: 58118E89F3A912897C070ADBF76221572C52609D
+      keyserver: hkp://p80.pool.sks-keyservers.net:80
+      state: present
+
+  - name: HTTPS APT transport for Docker repository
+    apt:
+      name: apt-transport-https
+      state: present
+
+  - name: Add Docker repository and update apt cache
+    apt_repository:
+      repo: deb https://apt.dockerproject.org/repo ubuntu-{{ ansible_distribution_release }} main
+      mode: '644'
+      update_cache: yes
+      state: present
+
+  # Installs latest version of Docker
+  - name: Install Docker
+    apt:
+      name: docker-engine
+      state: latest
+      update_cache: yes
+
+  # We must install pip via apt before we can use the pip module below
+  - name: Install pip, python-dev package with apt
+    apt:
+      pkg: "{{ item }}"
+      state: latest
+      update_cache: yes
+    with_items:
+      - python-pip
+      - python-dev
+
+  # Upgrade pip with pip to fix angstwad/docker.ubuntu/pull/35 and docker-py/issues/525
+  # Install latest version when no specific release is set.
+  - name: Upgrade latest pip, setuptools, docker-py and docker-compose with pip
+    pip:
+      name: "{{ item.name }}"
+      state: latest
+    with_items:
+      - { name: pip, version: "latest", install: "true" }
+      - { name: setuptools, version: "latest", install: "true" }
+      - { name: docker-compose, version: "latest", install: "true" }
+    ignore_errors: yes
+
+  - name: Start docker
+    service:
+      name: docker
+      state: started
+
+    # ATTENTION: this task can potentially create new users!
+  - name: Add users to the docker group
+    user:
+      name: "{{ansible_ssh_user}}"
+      groups: docker
+      append: yes

@@ -1,0 +1,8 @@
+# {{ ansible_managed }}
+{% for server in mesos_dns_hosts %}
+nameserver {{ hostvars[server]['ansible_eth0']['ipv4']['address'] }}
+{% endfor %}
+
+nameserver 141.3.175.65
+nameserver 141.3.175.66
+search openstacklocal

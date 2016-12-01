@@ -1,0 +1,9 @@
+---
+  - hosts: [mesos_slaves]
+    remote_user: ubuntu
+    become: yes
+    become_method: sudo
+    roles:
+      - { role: 'roles/java8/' }
+      - { role: 'roles/docker/' }
+      - { role: 'roles/mesos/', mesos_dns_install: "true", mesos_dns_hosts: "{{ groups['mesos_slaves']}}", mesos_containerizers: "docker,mesos", mesos_install_mode: "slave", zookeeper_hostnames: "{{ hostvars.mesos-masters.ansible_eth0.ipv4.address | join(':' + zookeeper_client_port + ',') }}:{{ zookeeper_client_port }}" }

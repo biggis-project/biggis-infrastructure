@@ -1,0 +1,14 @@
+---
+- include: debian.yml
+  when: ansible_os_family == 'Debian'
+
+- include: redhat.yml
+  when: ansible_os_family == 'RedHat'
+
+- include: config.yml
+
+- include: haproxy.yml
+  when: haproxy_script_location != ""
+
+- name: Enable Marathon service
+  service: name=marathon enabled=yes state=started

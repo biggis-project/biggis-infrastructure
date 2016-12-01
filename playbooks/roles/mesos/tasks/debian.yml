@@ -1,0 +1,104 @@
+---
+  - name: Add apt-key
+    apt_key: id=E56151BF keyserver=hkp://keyserver.ubuntu.com:80 state=present
+
+  - name: Add mesosphere repo
+    apt_repository:
+      repo: deb {{ mesosphere_apt_url }} {{ ansible_distribution_release|lower }} main
+      state: present
+
+  # - name: remove package
+  #   apt:
+  #     pkg: mesos
+  #     state: absent
+
+  - name: Install Debian OS packages and Mesos
+    apt:
+      pkg: "{{ item }}"
+      state: present
+      update_cache: yes
+    with_items:
+      - wget
+      - curl
+      - unzip
+      - python-setuptools
+      - python-dev
+      - mesos={{ mesos_version }}-{{ mesos_package_version }}.{{ mesos_os_distribution }}{{ mesos_os_version }}
+
+  # Create Mesos work directory for replicated logs
+  - name: Create Mesos work directory
+    file: path={{ mesos_work_dir }} state=directory
+    tags: mesos
+
+  - name: Remove existing Mesos configuration
+    file: path={{item}} state=absent
+    with_items:
+      - "/etc/mesos/"
+      - "/etc/mesos/zk"
+      - "/etc/mesos-master/"
+      - "/etc/mesos-slave/"
+      - "/etc/default/mesos-slave"
+      - "/etc/default/mesos-master"
+    tags: mesos
+
+  # Create neccessary directory
+  - name: Create default Mesos Master config directory
+    file: path=/etc/mesos-master state=directory mode=0755
+
+  - name: Create default Mesos Slave config directory
+    file: path=/etc/mesos-slave state=directory mode=0755
+
+  # Add new Mesos configuration files
+  - name: Add Mesos default config file
+    template: src=conf-mesos.j2 dest=/etc/default/mesos
+    notify:
+      - Restart mesos-master
+    when: mesos_install_mode == "master" or mesos_install_mode == "master-slave"
+    tags: mesos
+
+  # Add new Mesos configuration files
+  - name: Add Mesos default config file
+    template: src=conf-mesos.j2 dest=/etc/default/mesos
+    notify:
+      - Restart mesos-slave
+    when: mesos_install_mode == "slave" or mesos_install_mode == "master-slave"
+    tags: mesos
+
+  - name:  Add Mesos Master config files
+    template: src={{item.src}} dest={{item.dest}}
+    with_items:
+      - { src: 'conf-mesos-master-quorum.j2', dest: '/etc/mesos-master/quorum' }
+      - { src: 'conf-mesos-master-work_dir.j2', dest: '/etc/mesos-master/work_dir' }
+      - { src: 'conf-mesos-master-port.j2', dest: '/etc/mesos-master/port' }
+    when: mesos_install_mode == "master" or mesos_install_mode == "master-slave"
+    notify:
+      - Restart mesos-master
+    tags: mesos
+
+  - name: Add Mesos Slave config files
+    template: src={{item.src}} dest={{item.dest}}
+    with_items:
+      - { src: 'conf-mesos-slave-master.j2', dest: '/etc/mesos-slave/master'}
+      - { src: 'conf-mesos-slave-containerizers.j2', dest: '/etc/mesos-slave/containerizers'}
+      - { src: 'conf-mesos-slave-executor_registration_timeout.j2', dest: '/etc/mesos-slave/executor_registration_timeout'}
+      - { src: 'conf-mesos-slave-work_dir.j2', dest: '/etc/mesos-slave/work_dir'}
+    when: mesos_install_mode == "slave" or mesos_install_mode == "master-slave"
+    notify:
+      - Restart mesos-slave
+    tags: mesos
+
+  - name: Check if upstart exists
+    stat: path=/etc/init/
+    register: etc_init
+
+  - name: Mesos master upstart script
+    template: src=init-mesos-master.j2 dest=/etc/init/mesos-master.conf
+    when: (mesos_install_mode == "master" or mesos_install_mode == "master-slave") and etc_init.stat.exists == true
+    notify:
+      - Restart mesos-master
+
+  - name: Mesos slave upstart script
+    template: src=init-mesos-slave.j2 dest=/etc/init/mesos-slave.conf
+    when: (mesos_install_mode == "slave" or mesos_install_mode == "master-slave") and etc_init.stat.exists == true
+    notify:
+      - Restart mesos-slave

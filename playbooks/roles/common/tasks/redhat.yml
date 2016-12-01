@@ -1,0 +1,101 @@
+# tasks file for common
+---
+  - name: generate /etc/hosts file
+    template:
+      src: hosts.j2
+      dest: /etc/hosts
+    tags:
+      - common
+
+  # Check for build user group
+  - name: Check that build user group exists
+    group:
+      name: "{{ build_user_group }}"
+      state: present
+    tags:
+      - common
+
+  # Check for build user
+  - name: Check that build user exists
+    user:
+      name: "{{ build_user }}"
+      group: "{{ build_user_group }}"
+      state: present
+    changed_when: false
+    tags:
+      - common
+
+  # Check for build directory
+  - name: Check that build directory exists
+    file:
+      path: "{{ build_directory }}"
+      state: directory
+      mode: 0755
+      owner: "{{ build_user }}"
+      group: "{{ build_user_group }}"
+    tags:
+      - common
+
+  # Update latest packages
+  - name: Update packages
+    yum:
+      name: "*"
+      state: latest
+    tags:
+      - common
+
+  # Check if kernel version is up to date
+  - name: Check for kernel version
+    shell: LAST_KERNEL=`rpm -qa kernel | sort -V | tail -n 1 | sed 's/.*kernel-//'`; CURRENT_KERNEL=`uname -r`; if [ $LAST_KERNEL != $CURRENT_KERNEL ]; then echo 'reboot'; else echo 'no'; fi
+    ignore_errors: true
+    register: reboot_hint
+    changed_when: reboot_hint.stdout.find("reboot") != -1
+    notify:
+      - reboot_server
+      - wait_for_server
+    tags:
+      - common
+
+  # Immediately flush handlers when kernel is updated
+  # Default: handlers get executed at the end of a play
+  - meta: flush_handlers
+
+  # Check if EPEL is already available
+  - name: Check for EPEL
+    stat: path={{ yum_repo_path }}/epel.repo
+    register: epel_check
+    tags:
+      - common
+
+  # Download and install EPEL for Centos/RHEL version 7
+  - name: Download EPEL Repo - Centos/RHEL 7
+    get_url: url={{ epel_repo_url }} dest={{ build_directory }}/epel-release-{{ ansible_distribution_major_version }}-{{ epel_release[ansible_distribution_major_version] }}.noarch.rpm
+    when: epel_check.stat.exists == false
+    tags:
+      - common
+
+  - name: Install EPEL Repo - Centos/RHEL 7
+    command: rpm -ivh {{ build_directory }}/epel-release-{{ ansible_distribution_major_version }}-{{ epel_release[ansible_distribution_major_version] }}.noarch.rpm creates={{ yum_repo_path }}/epel.repo
+    when: epel_check.stat.exists == false
+    tags:
+      - common
+
+  # Install system tools
+  - name: Install useful system tools
+    yum:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - yum-utils
+      - htop
+      - tmux
+      - wget
+      - curl
+      - unzip
+      - python-setuptools
+      - python-devel
+      - git
+      - tar
+      - libselinux-python
+    tags:
+      - common

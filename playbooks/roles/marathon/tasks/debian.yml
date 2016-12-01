@@ -1,0 +1,9 @@
+---
+  - name: Add apt-key
+    apt_key: id=E56151BF keyserver=hkp://keyserver.ubuntu.com:80 state=present
+
+  - name: Add Mesosphere repo
+    apt_repository: repo="{{ marathon_apt_repo }}" state=present
+
+  - name: Install Marathon package
+    apt: pkg={{ marathon_apt_package }} state=present update_cache=yes

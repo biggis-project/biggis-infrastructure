@@ -1,0 +1,32 @@
+# Tasks for Zookeeper
+# According to https://github.com/AnsibleShipyard/ansible-zookeeper
+---
+  - name: Update apt cache
+    apt:
+      update_cache: yes
+      cache_valid_time: "{{ apt_cache_timeout }}"
+    tags: bootstrap
+
+  - name: Install Zookeeper
+    apt:
+      pkg: "{{ item }}"
+      state: installed
+    with_items:
+      - zookeeper
+      - zookeeperd
+
+  - name: Overwrite myid file
+    template: src=myid.j2 dest=/etc/zookeeper/conf/myid
+    notify:
+      - Restart zookeeper
+    tags: zookeeper
+
+  - name: Configure Zookeeper
+    template: src=zoo.cfg.j2 dest=/etc/zookeeper/conf/zoo.cfg
+    notify:
+      - Restart zookeeper
+    tags: zookeeper
+
+  - name: Add zookeeper's bin dir to the PATH
+    copy: content="export PATH=$PATH:{{zookeeper_dir}}/bin" dest="/etc/profile.d/zookeeper_path.sh" mode=755
+    when: zookeeper_register_path_env

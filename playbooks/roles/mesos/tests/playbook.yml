@@ -1,0 +1,13 @@
+# test file for virtualbox
+---
+- hosts: vagrantbox
+  remote_user: vagrant
+  become: yes
+  become_method: sudo
+  roles:
+    - {role: ../../common/}
+    - {role: ../../java8/}
+    - {role: ../../zookeeper/}
+    - {role: ../../docker/}
+    - {role: ../../, mesos_install_mode: "master-slave"}
+    - {role: ../../marathon/}

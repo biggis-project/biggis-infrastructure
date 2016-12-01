@@ -1,0 +1,4 @@
+---
+  vagrant_version: 1.8.1
+  vagrant_rpm_package: vagrant_{{vagrant_version}}_x86_64.rpm
+  vagrant_rpm_package_url: https://releases.hashicorp.com/vagrant/{{vagrant_version}}/{{vagrant_rpm_package}}

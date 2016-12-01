@@ -1,0 +1,37 @@
+---
+  # Java version related variables
+  # specifies {{ jdk_version }} according to ../default/main.yml
+  - include: java-role-variables.yml
+
+  - name: Add add-apt repository
+    apt:
+      pkg: software-properties-common
+      state: present
+      update_cache: yes
+
+  - name: Add webupd8 ppa
+    apt_repository: repo="ppa:webupd8team/java"
+
+  - name: Update
+    apt:
+      update_cache: yes
+
+  - name: Auto accept Oracle jdk license
+    shell: echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
+
+  - name: Install java8
+    apt:
+      pkg: "{{ item }}"
+      state: present
+      update_cache: yes
+    with_items:
+      - oracle-java8-installer
+      - ca-certificates
+
+  - name: Add JAVA_HOME
+    copy: content="export JAVA_HOME=/usr/lib/jvm/java-{{ java_version }}-oracle" dest="/etc/profile.d/java_home.sh" mode=755
+    when: java_register_path_env
+
+  - name: Add JAVA_HOME to the PATH
+    copy: content="export PATH=$PATH:/usr/lib/jvm/java-{{ java_version }}-oracle/bin" dest="/etc/profile.d/java_path.sh" mode=755
+    when: java_register_path_env

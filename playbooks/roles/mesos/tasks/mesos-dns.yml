@@ -1,0 +1,75 @@
+---
+  - name: Create GOPATH directory
+    file: path={{ go_path }} owner={{ ansible_user }} state=directory
+    when: (mesos_install_mode == "slave" or mesos_install_mode == "master-slave")
+    tags: mesos-dns
+
+  - name: Download and Unpack Go tarball
+    unarchive: src="{{ go_url }}" dest=/usr/local/ copy=no
+    when: (mesos_install_mode == "slave" or mesos_install_mode == "master-slave")
+    tags: mesos-dns
+
+  - name: Create symlink for go binary
+    file: src=/usr/local/go/bin/go dest=/usr/bin/go owner=root group=root state=link
+    when: (mesos_install_mode == "slave" or mesos_install_mode == "master-slave")
+    tags: mesos-dns
+
+  - name: Install additional packages for testing
+    yum: name=bind-utils state=present
+    when: (mesos_install_mode == "slave" or mesos_install_mode == "master-slave") and ansible_os_family == 'RedHat'
+    tags: mesos-dns
+
+  - name: Install additional packages for testing
+    apt: name=dnsutils state=present
+    when: (mesos_install_mode == "slave" or mesos_install_mode == "master-slave") and ansible_os_family == 'Debian'
+    tags: mesos-dns
+
+  - name: Add GOPATH to the PATH
+    template: src=env.sh.j2 dest=/etc/profile.d/env.sh
+    when: (mesos_install_mode == "slave" or mesos_install_mode == "master-slave") and ansible_os_family == 'RedHat'
+    tags: mesos-dns
+
+  - name: Source /etc/profile
+    shell: . /etc/profile
+    when: (mesos_install_mode == "slave" or mesos_install_mode == "master-slave") and ansible_os_family == 'RedHat'
+    tags: mesos-dns
+
+  - name: Add GOBIN
+    copy: content="export PATH=$PATH:/usr/local/go/bin" dest="/etc/profile.d/go_bin.sh" mode=755
+    when: (mesos_install_mode == "slave" or mesos_install_mode == "master-slave") and ansible_os_family == 'Debian'
+
+  - name: Add GOPATH
+    copy: content="export GOPATH=$HOME/go" dest="/etc/profile.d/go_home.sh" mode=755
+    when: (mesos_install_mode == "slave" or mesos_install_mode == "master-slave") and ansible_os_family == 'Debian'
+
+  - name: Add GOPATH to PATH
+    copy: content="export PATH=$PATH:$GOPATH/bin" dest="/etc/profile.d/go_path.sh" mode=755
+    when: (mesos_install_mode == "slave" or mesos_install_mode == "master-slave") and ansible_os_family == 'Debian'
+
+  - name: Copy Go script
+    copy: src=../files/build-mesos-dns.sh dest=/home/{{ ansible_user }}/build-mesos-dns.sh mode=755
+    when: (mesos_install_mode == "slave" or mesos_install_mode == "master-slave")
+    tags: mesos-dns
+
+  - name: Get Go dependencies and mesos-dns
+    shell: sh /home/{{ ansible_user }}/build-mesos-dns.sh
+    become: yes
+    become_user: ubuntu
+    when: (mesos_install_mode == "slave" or mesos_install_mode == "master-slave")
+    tags: mesos-dns
+
+  # Add new mesos-dns configuration file
+  - name: Add Mesos default config file
+    template: src=conf-config.json.j2 dest=/home/{{ ansible_user }}/go/src/github.com/mesosphere/mesos-dns/config.json owner={{ ansible_user }} group={{ ansible_user }}
+    when: (mesos_install_mode == "slave" or mesos_install_mode == "master-slave")
+    tags: mesos-dns
+
+  - name: Create symlink for mesos-dns
+    file: src=/home/{{ ansible_user }}/go/src/github.com/mesosphere/mesos-dns dest=/usr/local/mesos-dns owner=root group=root state=link
+    when: (mesos_install_mode == "slave" or mesos_install_mode == "master-slave")
+    tags: mesos-dns
+
+  # Needs to be enhanced: as of now, assumes that there is only one Mesos Master where mesos-dns gets deployed
+  - name: Set nameserver for Mesos Slaves
+    template: src=resolv.conf.j2 dest=/etc/resolv.conf
+    when: (mesos_install_mode == "slave" or mesos_install_mode == "master-slave" )

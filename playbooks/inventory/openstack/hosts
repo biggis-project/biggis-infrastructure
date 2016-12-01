@@ -1,0 +1,8 @@
+[mesos_masters]
+bwcloud-biggis-node-1 zoo_id=1
+
+[mesos_slaves]
+bwcloud-biggis-node-1
+bwcloud-biggis-node-2
+bwcloud-biggis-node-3
+bwcloud-biggis-node-4

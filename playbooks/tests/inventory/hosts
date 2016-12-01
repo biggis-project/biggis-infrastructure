@@ -1,0 +1,12 @@
+[mesos_masters]
+biggis.dev.net.node1 zoo_id=1
+
+[mesos_slaves]
+biggis.dev.net.node2
+biggis.dev.net.node3
+
+[mesos_masters:vars]
+iface=enp0s8
+
+[mesos_slaves:vars]
+iface=enp0s8

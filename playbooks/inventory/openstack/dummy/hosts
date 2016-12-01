@@ -1,0 +1,5 @@
+[mesos_masters]
+bwcloud.biggis.dummy zoo_id=1
+
+[mesos_slaves]
+bwcloud.biggis.dummy

@@ -1,0 +1,22 @@
+---
+  - name: Check for Mesosphere repo
+    stat: path=/etc/yum.repos.d/mesosphere.repo
+    register: epel_check
+    when: "ansible_os_family == 'RedHat' and ansible_distribution_major_version == '7'"
+    tags: install
+
+  - name: Add Mesosphere repo
+    yum: name={{ mesosphere_yum_repo }} state=present
+    when: "epel_check.stat.exists == false and ansible_os_family == 'RedHat' and ansible_distribution_major_version == '7'"
+    tags: install
+
+  - name: Check if Marathon rpm file already exists
+    shell: PACKAGE_INSTALLED=`rpm -qa | grep marathon*`; if [ "$PACKAGE_INSTALLED" != '' ] ; then echo 'installed'; else echo 'download'; fi
+    register: rpm_check
+    failed_when: rpm_check.rc > 1
+    changed_when: rpm_check.stdout.find('download') != -1
+
+  - name: Install Marathon
+    yum: name=marathon state=present
+    when: "rpm_check.stdout.find('download') != -1 and ansible_os_family == 'RedHat' and ansible_distribution_major_version == '7'"
+    tags: install

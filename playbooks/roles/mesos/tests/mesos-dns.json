@@ -1,0 +1,8 @@
+{
+    "cmd": "sudo /home/vagrant/go/src/github.com/mesosphere/mesos-dns/mesos-dns -v=1 -config=/home/vagrant/go/src/github.com/mesosphere/mesos-dns/config.json",
+    "cpus": 0.2,
+    "mem": 32,
+    "id": "mesos-dns",
+    "instances": 1,
+    "constraints": [["hostname", "CLUSTER", "biggis.dev.net.node1"]]
+}

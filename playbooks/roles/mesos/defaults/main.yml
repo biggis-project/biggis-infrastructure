@@ -1,0 +1,75 @@
+---
+mesos_install_mode: "master" # {master|slave|master-slave}
+mesos_dns_install: "false" # {false|true}
+mesos_dns_hosts: "{{ groups['mesos_slaves'] }}"
+mesos_version: "1.0.1"
+
+# Debian
+mesos_package_version: "2.0.93"
+mesosphere_apt_url: "http://repos.mesosphere.com/{{ ansible_distribution | lower }}"
+mesos_os_distribution: "{{ ansible_distribution | lower }}"
+mesos_os_version: "{{ ansible_distribution_version.split('.') | join('') }}"
+
+
+# RedHat: EPEL and Mesosphere yum repositories URL
+# Mesosphere released packaged per OS version
+mesosphere_releases:
+  '6': 'mesosphere-el-repo-6-3.noarch.rpm'
+  '7': 'mesosphere-el-repo-7-1.noarch.rpm'
+
+epel_release:
+  "4": 10
+  "5": 4
+  "6": 8
+  "7": 6
+
+epel_repo_url: "http://download.fedoraproject.org/pub/epel/{{ ansible_distribution_major_version }}/{{ ansible_userspace_architecture }}{{ '/' if ansible_distribution_major_version < '7' else '/e/' }}epel-release-{{ ansible_distribution_major_version }}-{{ epel_release[ansible_distribution_major_version] }}.noarch.rpm"
+mesosphere_yum_repo: "http://repos.mesosphere.io/el/{{ ansible_distribution_major_version }}/noarch/RPMS/{{ mesosphere_releases[ansible_distribution_major_version] }}"
+#mesosphere_yum_repo: "http://repos.mesosphere.com/el/7/noarch/RPMS/mesosphere-el-repo-7-1.noarch.rpm"
+
+# Mesos configuration settings
+# see http://mesos.apache.org/documentation/latest/configuration/
+#
+# Master + Slave
+# /etc/default/mesos
+mesos_dns_domain: "mesos"
+mesos_cluster_name: "biggis.dev"
+mesos_ip: "{{ hostvars[inventory_hostname]['ansible_eth0'].ipv4.address }}"
+mesos_log_dir: "/var/log/mesos"
+mesos_ulimit: "-n 8192" # limits use of system-wide resources
+mesos_hostname: "{{ inventory_hostname }}"
+zookeeper_client_port: "2181"
+zookeeper_hostnames: "{{ mesos_hostname }}:{{ zookeeper_client_port }}"
+
+
+# Master only
+# /etc/mesos-master/...
+mesos_master_port: "5050"
+mesos_work_dir: "/var/mesos"
+mesos_quorum: "1" # number of mesos masters for HA
+
+# Slave only
+# /etc/mesos-slave/...
+mesos_slave_port: "5051"
+mesos_slave_containerizers: "docker,mesos"
+mesos_slave_executor_timeout: "5mins"
+
+mesos_owner: "root"
+mesos_group: "root"
+
+
+# Additional configuration
+# Mesos environment variables
+# see http://mesos.apache.org/documentation/latest/configuration/
+#
+# seems not to be working with /usr/bin/mesos-init-wrapper
+# mesos_additional_configs: []
+  # For example:
+  # - name: FOO
+  #   value: bar
+
+go_version: "1.6"
+go_tarball: "go{{ go_version }}.linux-amd64.tar.gz"
+go_url: "https://storage.googleapis.com/golang/{{ go_tarball }}"
+go_root: /usr/local/go
+go_path: /home/{{ ansible_user }}/go
