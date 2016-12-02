@@ -11,7 +11,7 @@
 ### Additional Container
 
 **Note**: These container were only relevant for small testing purposes in the early phases of BigGIS or for small demos
-* [![Build Status](https://api.travis-ci.org/biggis-project/biggis-postgres.svg)](https://travis-ci.org/biggis-project/biggis-postgres) [biggis/tomcat:8.0.36](https://github.com/biggis-project/biggis-postgres)
+* [![Build Status](https://api.travis-ci.org/biggis-project/biggis-postgres.svg)](https://travis-ci.org/biggis-project/biggis-postgres) [biggis/postgres:9.6](https://github.com/biggis-project/biggis-postgres)
 
 ## BigGIS demos
 Docker based analytical BigGIS pipeline for demos, milestones, PoC's.
