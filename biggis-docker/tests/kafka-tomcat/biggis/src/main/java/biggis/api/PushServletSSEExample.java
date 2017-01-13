@@ -13,6 +13,7 @@ import org.glassfish.jersey.media.sse.SseFeature;
 public class PushServletSSEExample {
 
 	@GET
+	@Path("messages")
 	@Produces(SseFeature.SERVER_SENT_EVENTS)
 	public EventOutput getServerSentEvents() {
 		final EventOutput eventOutput = new EventOutput();
@@ -23,4 +24,6 @@ public class PushServletSSEExample {
 		}
 		return eventOutput;
 	}
+	
+	
 }

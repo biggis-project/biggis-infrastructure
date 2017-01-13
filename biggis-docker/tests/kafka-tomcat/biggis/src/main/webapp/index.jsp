@@ -10,7 +10,7 @@
 	</table>
 	
       <script type="text/javascript">
-        var url = "/biggis/api/events";
+        var url = "/biggis/api/events/messages";
         var source = new EventSource(url);
         
         source.onerror = function (event) {
