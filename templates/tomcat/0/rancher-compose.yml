@@ -9,11 +9,13 @@
   questions:
     - variable: "admin_user"
       description: "Tomcat admin user name."
+      label: "Admin user:"
       required: true
       default: "admin"
       type: "string"
     - variable: "admin_password"
       description: "Tomcat admin user password."
+      label: "Admin password:"
       required: true
       default: "password"
       type: "string"
