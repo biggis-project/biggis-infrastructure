@@ -18,6 +18,8 @@ services:
     depends_on:
       - jobmanager
     command: docker-entrypoint.sh taskmanager
+    labels:
+      - io.rancher.scheduler.affinity:container_soft_ne: io.rancher.stack_service.name=$${stack_name}/$${service_name}
     environment:
       USER_ID: 1000
       USER_NAME: flink

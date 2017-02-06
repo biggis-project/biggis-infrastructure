@@ -14,7 +14,6 @@
       default: 1
       type: "int"
 jobmanager:
-  scale: ${flink_scale}
   retain_ip: true
   health_check:
     port: 8081
@@ -23,3 +22,5 @@ jobmanager:
     request_line: ''
     healthy_threshold: 2
     response_timeout: 5000
+taskmanager:
+    scale: ${flink_scale}
