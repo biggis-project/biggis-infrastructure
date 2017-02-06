@@ -1,8 +1,9 @@
-name: # Name of the Catalog Entry
+name: Apache Tomcat
 description: |
-  # Description of the Catalog Entry
-version: # Version of the Catalog to be used
-category: # Category to be used for searching catalog entries
-maintainer: # The maintainer of the catalog entry
-license: # The license
+  Tomcat Webserver
+version: 8.0.36
+category: Webserver
+maintainer: "Patrick Wiener <patrick.wiener@hs-karlsruhe.de>"
+minimum_rancher_version: v0.59.0
+license:
 projectURL: # A URL related to the catalog entry
