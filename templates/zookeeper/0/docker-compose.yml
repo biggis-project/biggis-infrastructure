@@ -1,0 +1,13 @@
+version: '2'
+services:
+
+  zookeeper:
+    image: biggis/zookeeper:3.4.6
+    hostname: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      USER_ID: ${USER_ID-1000}
+      USER_NAME: zookeeper
+    labels:
+      io.rancher.scheduler.affinity:container_soft_ne: io.rancher.stack_service.name=$${stack_name}/$${service_name}
