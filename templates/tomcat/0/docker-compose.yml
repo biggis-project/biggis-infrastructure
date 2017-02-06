@@ -5,7 +5,9 @@ services:
     image: biggis/tomcat:8.0.36
     hostname: tomcat
     ports:
-      - "5000:8080"
+      - "8080:8080"
+    labels:
+      io.rancher.scheduler.affinity:host_label_ne: rancher.instance_type=server-agent
     environment:
       USER_ID: 1000
       USER_NAME: tomcat
