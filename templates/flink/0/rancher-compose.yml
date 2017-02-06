@@ -13,7 +13,7 @@
       required: true
       default: 1
       type: "int"
-taskmanager:
+jobmanager:
   scale: ${flink_scale}
   retain_ip: true
   health_check:
