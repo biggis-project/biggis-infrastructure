@@ -7,7 +7,7 @@ services:
     ports:
       - "2181:2181"
     environment:
-      USER_ID: ${USER_ID-1000}
+      USER_ID: 1000
       USER_NAME: zookeeper
     labels:
       io.rancher.scheduler.affinity:container_soft_ne: io.rancher.stack_service.name=$${stack_name}/$${service_name}
