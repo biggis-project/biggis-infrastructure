@@ -13,7 +13,7 @@
   #     required: true
   #     default: 1
   #     type: "int"
-jobmanager:
+flink-jobmanager:
   retain_ip: true
   health_check:
     port: 8081
@@ -35,6 +35,15 @@ kafka:
   retain_ip: true
   health_check:
     port: 9092
+    interval: 5000
+    unhealthy_threshold: 3
+    request_line: ''
+    healthy_threshold: 2
+    response_timeout: 5000
+spark-master:
+  retain_ip: true
+  health_check:
+    port: 8080
     interval: 5000
     unhealthy_threshold: 3
     request_line: ''
