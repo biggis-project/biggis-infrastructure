@@ -54,8 +54,7 @@ services:
     image: biggis/kafka:0.10.1.1
     hostname: kafka
     depends_on:
-      zookeeper:
-        condition: service_healthy
+      - zookeeper
     ports:
       - "9092:9092"
     environment:
