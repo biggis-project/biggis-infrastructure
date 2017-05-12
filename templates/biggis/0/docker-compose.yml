@@ -1,7 +1,7 @@
 version: '2'
 services:
 
-  jobmanager:
+  flink-jobmanager:
     image: biggis/flink:1.2.0
     hostname: jobmanager
     ports:
@@ -11,23 +11,77 @@ services:
     environment:
       USER_ID: 1000
       USER_NAME: flink
+    labels:
+      io.rancher.container.pull_image: always
     logging:
       driver: "json-file"
       options:
         max-size: "1m"
         max-file: "1"
 
-  taskmanager:
+  flink-taskmanager:
     image: biggis/flink:1.2.0
     hostname: taskmanager
     depends_on:
       - jobmanager
     command: docker-entrypoint.sh taskmanager
-    labels:
-      io.rancher.scheduler.affinity:container_soft_ne: io.rancher.stack_service.name=$${stack_name}/$${service_name}
     environment:
       USER_ID: 1000
       USER_NAME: flink
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.affinity:container_soft_ne: io.rancher.stack_service.name=$${stack_name}/$${service_name}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+
+  spark-master:
+    image: biggis/spark:2.1.0
+    hostname: spark-master
+    ports:
+      - "4040:4040"
+      - "6066:6066"
+      - "7077:7077"
+      - "8080:8080"
+    command: start.sh master
+    environment:
+      USER_ID: 1000
+      USER_NAME: spark
+      MASTER: spark://spark-master:7077
+      SPARK_CONF_DIR: /conf
+      SPARK_PUBLIC_DNS: 127.0.0.1
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.affinity:host_label_ne: rancher.instance_type=server-agent
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+
+  spark-worker:
+    image: biggis/spark:2.1.0
+    hostname: spark-worker
+    depends_on:
+      - master
+    command: start.sh worker
+    # ports:
+    #   - "8082:8081"
+    environment:
+      USER_ID: 1000
+      USER_NAME: spark
+      SPARK_MASTER: spark-master
+      SPARK_CONF_DIR: /conf
+      SPARK_PUBLIC_DNS: 127.0.0.1
+      SPARK_WORKER_CORES: 1
+      SPARK_WORKER_MEMORY: 1g
+      # SPARK_WORKER_PORT: 8082
+      SPARK_WORKER_WEBUI_PORT: 8081
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.affinity:container_soft_ne: io.rancher.stack_service.name=$${stack_name}/$${service_name}
     logging:
       driver: "json-file"
       options:
@@ -44,6 +98,8 @@ services:
       USER_NAME: zookeeper
     volumes:
       - zookeeper-data:/tmp/zookeeper/data
+    labels:
+      io.rancher.container.pull_image: always
     logging:
       driver: "json-file"
       options:
@@ -63,6 +119,8 @@ services:
       USER_NAME: kafka
     volumes:
       - kafka-data:/tmp/kafka/data
+    labels:
+      io.rancher.container.pull_image: always
     logging:
       driver: "json-file"
       options:
