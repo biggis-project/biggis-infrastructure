@@ -11,6 +11,8 @@ services:
     environment:
       USER_ID: 1000
       USER_NAME: flink
+    volumes:
+      - landuse-data:/opt/flink/data/landuse
     labels:
       io.rancher.container.pull_image: always
     logging:
@@ -28,6 +30,8 @@ services:
     environment:
       USER_ID: 1000
       USER_NAME: flink
+    volumes:
+      - landuse-data:/opt/flink/data/landuse
     labels:
       io.rancher.container.pull_image: always
       io.rancher.scheduler.affinity:container_soft_ne: io.rancher.stack_service.name=$${stack_name}/$${service_name}
@@ -52,6 +56,8 @@ services:
       MASTER: spark://spark-master:7077
       SPARK_CONF_DIR: /conf
       SPARK_PUBLIC_DNS: 127.0.0.1
+    volumes:
+      - landuse-data:/opt/spark/data/landuse
     labels:
       io.rancher.container.pull_image: always
       io.rancher.scheduler.affinity:host_label_ne: rancher.instance_type=server-agent
@@ -79,6 +85,8 @@ services:
       SPARK_WORKER_MEMORY: 1g
       # SPARK_WORKER_PORT: 8082
       SPARK_WORKER_WEBUI_PORT: 8081
+    volumes:
+      - landuse-data:/opt/spark/data/landuse
     labels:
       io.rancher.container.pull_image: always
       io.rancher.scheduler.affinity:container_soft_ne: io.rancher.stack_service.name=$${stack_name}/$${service_name}
@@ -132,5 +140,8 @@ volumes:
     driver: rancher-nfs
     external: true
   kafka-data:
+    driver: rancher-nfs
+    external: true
+  landuse-data:
     driver: rancher-nfs
     external: true
