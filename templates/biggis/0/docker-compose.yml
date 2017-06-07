@@ -151,12 +151,33 @@ services:
         max-size: "1m"
         max-file: "1"
 
+  exasolution:
+    image: exasol/docker-db:6.0.0-d1sc
+    hostname: exasolution
+    ports:
+      - "8888:8888"
+      - "6583:6583"
+    privileged: true
+    volumes:
+      - exasolution-data:/exa
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.affinity:host_label: nfs_server=true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+
 
 volumes:
   zookeeper-data:
     driver: rancher-nfs
     external: true
   kafka-data:
+    driver: rancher-nfs
+    external: true
+  exasolution-data:
     driver: rancher-nfs
     external: true
   couchdb-data:

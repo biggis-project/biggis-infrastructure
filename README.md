@@ -9,6 +9,7 @@
 * [![Build Status](https://api.travis-ci.org/biggis-project/biggis-base.svg)](https://travis-ci.org/biggis-project/biggis-flink) [biggis/flink:1.2.0](https://github.com/biggis-project/biggis-flink)
 * [![Build Status](https://api.travis-ci.org/biggis-project/biggis-spark.svg)](https://travis-ci.org/biggis-project/biggis-spark) [biggis/spark:2.1.0](https://github.com/biggis-project/biggis-spark)
 * [![Build Status](https://api.travis-ci.org/biggis-project/biggis-tomcat.svg)](https://travis-ci.org/biggis-project/biggis-tomcat) [biggis/tomcat:8.0.36](https://github.com/biggis-project/biggis-tomcat)
+* [EXASOL/docker-db](https://github.com/EXASOL/docker-db)
 
 ### Additional Container
 
@@ -20,3 +21,6 @@ Docker based analytical BigGIS pipeline for demos, milestones, PoC's.
 
 ## BigGIS playbooks
 Various Ansible playbooks to setup and provision CentOS 7 and Ubuntu 14.04 cluster with BigGIS container management and deployment applications.
+
+## BigGIS templates
+BigGIS infrastructure template for running a BigGIS cluster on [Rancher](http://docs.rancher.com/rancher/) Cattle.
