@@ -40,6 +40,15 @@ kafka:
     request_line: ''
     healthy_threshold: 2
     response_timeout: 5000
+couchdb:
+  retain_ip: true
+  health_check:
+    port: 5984
+    interval: 5000
+    unhealthy_threshold: 3
+    request_line: ''
+    healthy_threshold: 2
+    response_timeout: 5000
 spark-master:
   retain_ip: true
   health_check:
