@@ -138,7 +138,8 @@ services:
   couchdb:
     image: couchdb
     hostname: couchdb
-    ports: "5984:5984"
+    ports:
+      - "5984:5984"
     volumes:
       - couchdb-data:/usr/local/var/lib/couchdb
     labels:
