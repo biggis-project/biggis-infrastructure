@@ -1,9 +1,113 @@
 version: '2'
 services:
 
+# -----------------------------------------------------------------------------
+# Modelling (UI)
+# -----------------------------------------------------------------------------
+  nginx:
+    image: registry.biggis.bwcloud/streampipes/nginx:1.13
+    hostname: nginx
+    container_name: nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      - activemq
+      - couchdb
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.affinity:host_label: nginx=true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+
+  backend:
+    image: registry.biggis.bwcloud/streampipes/backend:8.0.36
+    hostname: backend
+    container_name: backend
+    # optional
+    ports:
+      - "8030:8030"
+    environment:
+      USER_ID: 1000
+      USER_NAME: tomcat
+      TOMCAT_ADMIN: biggis
+      TOMCAT_ADMIN_PASSWORD: biggis
+    volumes:
+     - streampipes-config:/root/.streampipes
+     - sesame-data:/root/.aduna
+    labels:
+      io.rancher.container.pull_image: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+
+# -----------------------------------------------------------------------------
+# Connectors
+# -----------------------------------------------------------------------------
+  sources:
+      image: registry.biggis.bwcloud/streampipes/sources-samples
+      hostname: sources
+      container_name: sources
+      ports:
+        - "8089:8089"
+      depends_on:
+        - kafka
+      volumes:
+        - streampipes-config:/root/.streampipes
+      labels:
+        io.rancher.container.pull_image: always
+      logging:
+        driver: "json-file"
+        options:
+          max-size: "1m"
+          max-file: "1"
+
+  sinks:
+      image: registry.biggis.bwcloud/streampipes/sinks-samples
+      hostname: sinks
+      container_name: sinks
+      ports:
+        - "8091:8091"
+      volumes:
+        - streampipes-config:/root/.streampipes
+      labels:
+        io.rancher.container.pull_image: always
+      logging:
+        driver: "json-file"
+        options:
+          max-size: "1m"
+          max-file: "1"
+
+# -----------------------------------------------------------------------------
+# Analytics
+# -----------------------------------------------------------------------------
+  flink-nodes:
+      image: registry.biggis.bwcloud/streampipes/flink-nodes
+      hostname: flink-nodes
+      container_name: flink-nodes
+      depends_on:
+        - flink-jobmanager
+      ports:
+        - "8094:8094"
+      volumes:
+        - streampipes-config:/root/.streampipes
+      labels:
+        io.rancher.container.pull_image: always
+      logging:
+        driver: "json-file"
+        options:
+          max-size: "1m"
+          max-file: "1"
+
   flink-jobmanager:
     image: biggis/flink:1.3.0
     hostname: jobmanager
+    container_name: flink-jobmanager
     ports:
       - "8081:8081"
       - "6123:6123"
@@ -25,7 +129,7 @@ services:
     image: biggis/flink:1.3.0
     hostname: taskmanager
     depends_on:
-      - jobmanager
+      - flink-jobmanager
     command: docker-entrypoint.sh taskmanager
     environment:
       USER_ID: 1000
@@ -44,6 +148,7 @@ services:
   spark-master:
     image: biggis/spark:2.1.0
     hostname: spark-master
+    container_name: spark-master
     ports:
       - "4040:4040"
       - "6066:6066"
@@ -60,7 +165,6 @@ services:
       - landuse-data:/opt/spark/data/landuse
     labels:
       io.rancher.container.pull_image: always
-      io.rancher.scheduler.affinity:host_label_ne: rancher.instance_type=server-agent
     logging:
       driver: "json-file"
       options:
@@ -71,7 +175,7 @@ services:
     image: biggis/spark:2.1.0
     hostname: spark-worker
     depends_on:
-      - master
+      - spark-master
     command: start.sh worker
     # ports:
     #   - "8082:8081"
@@ -96,16 +200,20 @@ services:
         max-size: "1m"
         max-file: "1"
 
+# -----------------------------------------------------------------------------
+# Middleware
+# -----------------------------------------------------------------------------
   zookeeper:
     image: biggis/zookeeper:3.4.9
     hostname: zookeeper
+    container_name: zookeeper
     ports:
       - "2181:2181"
     environment:
       USER_ID: 1000
       USER_NAME: zookeeper
-    volumes:
-      - zookeeper-data:/tmp/zookeeper/data
+    # volumes:
+    #   - zookeeper-data:/tmp/zookeeper/data
     labels:
       io.rancher.container.pull_image: always
     logging:
@@ -117,6 +225,7 @@ services:
   kafka:
     image: biggis/kafka:0.10.1.1
     hostname: kafka
+    container_name: kafka
     depends_on:
       - zookeeper
     ports:
@@ -125,8 +234,8 @@ services:
       #KAFKA_ADVERTISED_HOST_NAME: localhost
       USER_ID: 1000
       USER_NAME: kafka
-    volumes:
-      - kafka-data:/tmp/kafka/data
+    # volumes:
+    #   - kafka-data:/tmp/kafka/data
     labels:
       io.rancher.container.pull_image: always
     logging:
@@ -135,13 +244,33 @@ services:
         max-size: "1m"
         max-file: "1"
 
+  # StreamPipes (when Kafka is not supported)
+  activemq:
+    image: registry.biggis.bwcloud/streampipes/activemq:5.14.4
+    hostname: activemq
+    container_name: activemq
+    ports:
+      - "61616:61616"
+      - "61614:61614"
+    labels:
+      io.rancher.container.pull_image: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+
+# -----------------------------------------------------------------------------
+# Storage Backends
+# -----------------------------------------------------------------------------
   couchdb:
     image: couchdb
     hostname: couchdb
+    container_name: couchdb
     ports:
       - "5984:5984"
-    volumes:
-      - couchdb-data:/usr/local/var/lib/couchdb
+    #volumes:
+    #  - couchdb-data:/usr/local/var/lib/couchdb
     labels:
       io.rancher.container.pull_image: always
       io.rancher.scheduler.affinity:host_label: nfs_server=true
@@ -151,15 +280,16 @@ services:
         max-size: "1m"
         max-file: "1"
 
-  exasolution:
+  exasol:
     image: exasol/docker-db:6.0.0-d1sc
-    hostname: exasolution
+    hostname: exasol
+    container_name: exasol
     ports:
       - "8888:8888"
       - "6583:6583"
     privileged: true
     volumes:
-      - exasolution-data:/exa
+      - exasol-data:/exa
     labels:
       io.rancher.container.pull_image: always
       io.rancher.scheduler.affinity:host_label: nfs_server=true
@@ -177,10 +307,16 @@ volumes:
   kafka-data:
     driver: rancher-nfs
     external: true
-  exasolution-data:
+  exasol-data:
     driver: rancher-nfs
     external: true
   couchdb-data:
+    driver: rancher-nfs
+    external: true
+  sesame-data:
+    driver: rancher-nfs
+    external: true
+  streampipes-config:
     driver: rancher-nfs
     external: true
   landuse-data:
