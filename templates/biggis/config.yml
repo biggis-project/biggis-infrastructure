@@ -1,7 +1,7 @@
 name: BigGIS
 description: |
   (Experimental) BigGIS Cluster
-version: 0.1
+version: 0.2
 category:
 maintainer: "Patrick Wiener <patrick.wiener@hs-karlsruhe.de>"
 minimum_rancher_version: v0.59.0
