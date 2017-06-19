@@ -4,14 +4,106 @@ services:
 # -----------------------------------------------------------------------------
 # Modelling (UI)
 # -----------------------------------------------------------------------------
+  nginx:
+    image: registry.biggis.bwcloud/streampipes/nginx:1.13
+    hostname: nginx
+    container_name: nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      - activemq
+      - couchdb
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.affinity:host_label: nginx=true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+
+  backend:
+    image: registry.biggis.bwcloud/streampipes/backend:8.0.36
+    hostname: backend
+    container_name: backend
+    # optional
+    ports:
+      - "8030:8030"
+    environment:
+      USER_ID: 1000
+      USER_NAME: tomcat
+      TOMCAT_ADMIN: biggis
+      TOMCAT_ADMIN_PASSWORD: biggis
+    volumes:
+     - streampipes-config:/root/.streampipes
+     - sesame-data:/root/.aduna
+    labels:
+      io.rancher.container.pull_image: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
 
 # -----------------------------------------------------------------------------
 # Connectors
 # -----------------------------------------------------------------------------
+  sources:
+      image: registry.biggis.bwcloud/streampipes/sources-samples
+      hostname: sources
+      container_name: sources
+      ports:
+        - "8089:8089"
+      depends_on:
+        - kafka
+      volumes:
+        - streampipes-config:/root/.streampipes
+      labels:
+        io.rancher.container.pull_image: always
+      logging:
+        driver: "json-file"
+        options:
+          max-size: "1m"
+          max-file: "1"
+
+  sinks:
+      image: registry.biggis.bwcloud/streampipes/sinks-samples
+      hostname: sinks
+      container_name: sinks
+      ports:
+        - "8091:8091"
+      volumes:
+        - streampipes-config:/root/.streampipes
+      labels:
+        io.rancher.container.pull_image: always
+      logging:
+        driver: "json-file"
+        options:
+          max-size: "1m"
+          max-file: "1"
 
 # -----------------------------------------------------------------------------
 # Analytics
 # -----------------------------------------------------------------------------
+  flink-nodes:
+      image: registry.biggis.bwcloud/streampipes/flink-nodes
+      hostname: flink-nodes
+      container_name: flink-nodes
+      depends_on:
+        - flink-jobmanager
+      ports:
+        - "8094:8094"
+      volumes:
+        - streampipes-config:/root/.streampipes
+      labels:
+        io.rancher.container.pull_image: always
+      logging:
+        driver: "json-file"
+        options:
+          max-size: "1m"
+          max-file: "1"
+
   flink-jobmanager:
     image: biggis/flink:1.3.0
     hostname: jobmanager
@@ -152,9 +244,42 @@ services:
         max-size: "1m"
         max-file: "1"
 
+  # StreamPipes (when Kafka is not supported)
+  activemq:
+    image: registry.biggis.bwcloud/streampipes/activemq:5.14.4
+    hostname: activemq
+    container_name: activemq
+    ports:
+      - "61616:61616"
+      - "61614:61614"
+    labels:
+      io.rancher.container.pull_image: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+
 # -----------------------------------------------------------------------------
 # Storage Backends
 # -----------------------------------------------------------------------------
+  couchdb:
+    image: couchdb
+    hostname: couchdb
+    container_name: couchdb
+    ports:
+      - "5984:5984"
+    volumes:
+     - couchdb-data:/usr/local/var/lib/couchdb
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.affinity:host_label: nfs_server=true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+
   exasol:
     image: exasol/docker-db:6.0.0-d1sc
     hostname: exasol
@@ -183,6 +308,15 @@ volumes:
     driver: rancher-nfs
     external: true
   exasol-data:
+    driver: rancher-nfs
+    external: true
+  couchdb-data:
+    driver: rancher-nfs
+    external: true
+  sesame-data:
+    driver: rancher-nfs
+    external: true
+  streampipes-config:
     driver: rancher-nfs
     external: true
   landuse-data:

@@ -1,0 +1,116 @@
+.catalog:
+  name: BigGIS
+  version: 0.2
+  description: |
+    (Experimental) BigGIS Cluster
+  minimum_rancher_version: v0.59.0
+  maintainer: "Patrick Wiener <patrick.wiener@hs-karlsruhe.de>"
+  uuid: biggis-0
+  # questions:
+  #   - variable: "flink_scale"
+  #     description: "Number of Flink taskmanager nodes."
+  #     label: "Flink Nodes:"
+  #     required: true
+  #     default: 1
+  #     type: "int"
+nginx:
+  retain_ip: true
+  health_check:
+    port: 80
+    interval: 5000
+    unhealthy_threshold: 3
+    request_line: ''
+    healthy_threshold: 2
+    response_timeout: 5000
+backend:
+  retain_ip: true
+  health_check:
+    port: 8030
+    interval: 5000
+    unhealthy_threshold: 3
+    request_line: ''
+    healthy_threshold: 2
+    response_timeout: 5000
+sources:
+  retain_ip: true
+  health_check:
+    port: 8089
+    interval: 5000
+    unhealthy_threshold: 3
+    request_line: ''
+    healthy_threshold: 2
+    response_timeout: 5000
+sinks:
+  retain_ip: true
+  health_check:
+    port: 8091
+    interval: 5000
+    unhealthy_threshold: 3
+    request_line: ''
+    healthy_threshold: 2
+    response_timeout: 5000
+flink-nodes:
+  retain_ip: true
+  health_check:
+    port: 8094
+    interval: 5000
+    unhealthy_threshold: 3
+    request_line: ''
+    healthy_threshold: 2
+    response_timeout: 5000
+activemq:
+  retain_ip: true
+  health_check:
+    port: 61616
+    interval: 5000
+    unhealthy_threshold: 3
+    request_line: ''
+    healthy_threshold: 2
+    response_timeout: 5000
+flink-jobmanager:
+  retain_ip: true
+  health_check:
+    port: 8081
+    interval: 5000
+    unhealthy_threshold: 3
+    request_line: ''
+    healthy_threshold: 2
+    response_timeout: 5000
+zookeeper:
+  retain_ip: true
+  health_check:
+    port: 2181
+    interval: 5000
+    unhealthy_threshold: 3
+    request_line: ''
+    healthy_threshold: 2
+    response_timeout: 5000
+kafka:
+  retain_ip: true
+  health_check:
+    port: 9092
+    interval: 5000
+    unhealthy_threshold: 3
+    request_line: ''
+    healthy_threshold: 2
+    response_timeout: 5000
+couchdb:
+  retain_ip: true
+  health_check:
+    port: 5984
+    interval: 5000
+    unhealthy_threshold: 3
+    request_line: ''
+    healthy_threshold: 2
+    response_timeout: 5000
+spark-master:
+  retain_ip: true
+  health_check:
+    port: 8080
+    interval: 5000
+    unhealthy_threshold: 3
+    request_line: ''
+    healthy_threshold: 2
+    response_timeout: 5000
+# taskmanager:
+#     scale: ${flink_scale}
