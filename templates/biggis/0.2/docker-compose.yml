@@ -281,7 +281,7 @@ services:
         max-file: "1"
 
   exasol:
-    image: exasol/docker-db:6.0.0-d1sc
+    image: exasol/docker-db:6.0.1-d1sc1
     hostname: exasol
     container_name: exasol
     ports:
