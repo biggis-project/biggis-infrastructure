@@ -3,6 +3,7 @@
 ### Current Container environment
 
 * [![Build Status](https://api.travis-ci.org/biggis-project/biggis-base.svg)](https://travis-ci.org/biggis-project/biggis-base) [biggis/base](https://github.com/biggis-project/biggis-base)
+* [![Build Status](https://api.travis-ci.org/biggis-project/biggis-accumulo.svg)](https://travis-ci.org/biggis-project/biggis-accumulo) [biggis/base](https://github.com/biggis-project/biggis-accumulo)
 * [![Build Status](https://api.travis-ci.org/biggis-project/biggis-geoserver.svg)](https://travis-ci.org/biggis-project/biggis-geoserver) [biggis/geoserver](https://github.com/biggis-project/biggis-geoserver)
 * [![Build Status](https://api.travis-ci.org/biggis-project/biggis-hdfs.svg)](https://travis-ci.org/biggis-project/biggis-hdfs) [biggis/hdfs](https://github.com/biggis-project/biggis-hdfs)
 * [![Build Status](https://api.travis-ci.org/biggis-project/biggis-kafka.svg)](https://travis-ci.org/biggis-project/biggis-kafka) [biggis/kafka](https://github.com/biggis-project/biggis-kafka)
