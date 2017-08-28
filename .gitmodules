@@ -1,6 +1,3 @@
-[submodule "docker/base"]
-	path = docker/base
-	url = https://github.com/biggis-project/biggis-base
 [submodule "docker/geoserver"]
 	path = docker/geoserver
 	url = https://github.com/biggis-project/biggis-geoserver
@@ -22,3 +19,9 @@
 [submodule "docker/tomcat"]
 	path = docker/tomcat
 	url = https://github.com/biggis-project/biggis-tomcat
+[submodule "docker/zookeeper"]
+	path = docker/zookeeper
+	url = https://github.com/biggis-project/biggis-zookeeper
+[submodule "docker/base"]
+	path = docker/base
+	url = https://github.com/biggis-project/biggis-base
