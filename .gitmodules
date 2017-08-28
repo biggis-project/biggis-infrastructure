@@ -1,0 +1,24 @@
+[submodule "docker/base"]
+	path = docker/base
+	url = https://github.com/biggis-project/biggis-base
+[submodule "docker/geoserver"]
+	path = docker/geoserver
+	url = https://github.com/biggis-project/biggis-geoserver
+[submodule "docker/accumulo"]
+	path = docker/accumulo
+	url = https://github.com/biggis-project/biggis-accumulo
+[submodule "docker/hdfs"]
+	path = docker/hdfs
+	url = https://github.com/biggis-project/biggis-hdfs
+[submodule "docker/kafka"]
+	path = docker/kafka
+	url = https://github.com/biggis-project/biggis-kafka
+[submodule "docker/flink"]
+	path = docker/flink
+	url = https://github.com/biggis-project/biggis-flink
+[submodule "docker/spark"]
+	path = docker/spark
+	url = https://github.com/biggis-project/biggis-spark
+[submodule "docker/tomcat"]
+	path = docker/tomcat
+	url = https://github.com/biggis-project/biggis-tomcat
