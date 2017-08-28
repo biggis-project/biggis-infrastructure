@@ -1,0 +1,5 @@
+{
+  "description": "##VOLUME_NAME## volume mount",
+  "driver": "rancher-nfs",
+  "name": "##VOLUME_NAME##-data"
+}

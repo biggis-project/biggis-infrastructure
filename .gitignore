@@ -7,3 +7,13 @@ biggis-collector/
 target/
 *.iml
 .idea/
+vagrant/
+mesos-masters.yml
+mesos-slaves.yml
+debug.yml
+mesos/
+marathon/
+virtualbox/
+vagrant/
+zookeeper/
+env-*

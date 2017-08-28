@@ -18,13 +18,13 @@ services:
         CATALINA_HOME: /opt/tomcat
       volumes:
        - geoserver-data:/opt/tomcat/webapps/geoserver/data
-    labels:
-      io.rancher.container.pull_image: always
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "1m"
-        max-file: "1"
+      labels:
+        io.rancher.container.pull_image: always
+      logging:
+        driver: "json-file"
+        options:
+          max-size: "1m"
+          max-file: "1"
 
 # -----------------------------------------------------------------------------
 # Modelling (UI)
