@@ -10,7 +10,7 @@ services:
       ports:
         - "9090:9090"
       environment:
-        USER_ID: ${USER_ID-1000}
+        USER_ID: 1000
         USER_NAME: geoserver
         TOMCAT_ADMIN: biggis
         TOMCAT_ADMIN_PASSWORD: biggis
@@ -322,7 +322,7 @@ services:
         - "8020:8020"
       command: start.sh name
       environment:
-        USER_ID: ${USER_ID-1000}
+        USER_ID: 1000
         USER_NAME: hdfs
         HADOOP_MASTER_ADDRESS: hdfs-name
         TIMEZONE: Europe/Berlin
@@ -344,7 +344,7 @@ services:
       - "50090:50090"
     command: start.sh sname
     environment:
-      USER_ID: ${USER_ID-1000}
+      USER_ID: 1000
       USER_NAME: hdfs
       HADOOP_MASTER_ADDRESS: hdfs-name
       TIMEZONE: Europe/Berlin
@@ -367,7 +367,7 @@ services:
       - "50075:50075"
     command: start.sh data
     environment:
-      USER_ID: ${USER_ID-1000}
+      USER_ID: 1000
       USER_NAME: hdfs
       HADOOP_MASTER_ADDRESS: hdfs-name
       TIMEZONE: Europe/Berlin
@@ -389,7 +389,7 @@ services:
       - hdfs-name
     command: ["start.sh", "master", "--auto-init"]
     environment:
-      USER_ID: ${USER_ID-1000}
+      USER_ID: 1000
       USER_NAME: accumulo
       HADOOP_MASTER_ADDRESS: hdfs-name
       ZOOKEEPERS: zookeeper
@@ -412,7 +412,7 @@ services:
     ports:
       - 50095:50095
     environment:
-      USER_ID: ${USER_ID-1000}
+      USER_ID: 1000
       USER_NAME: accumulo
       HADOOP_MASTER_ADDRESS: hdfs-name
       ZOOKEEPERS: zookeeper
@@ -432,7 +432,7 @@ services:
       - accumulo-master
     command: ["start.sh", "tserver"]
     environment:
-      USER_ID: ${USER_ID-1000}
+      USER_ID: 1000
       USER_NAME: accumulo
       HADOOP_MASTER_ADDRESS: hdfs-name
       ZOOKEEPERS: zookeeper
