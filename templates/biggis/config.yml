@@ -1,9 +1,9 @@
 name: BigGIS
 description: |
   (Experimental) BigGIS Cluster
-version: 0.3
+version: 0.4
 category:
 maintainer: "Patrick Wiener <patrick.wiener@hs-karlsruhe.de>"
 minimum_rancher_version: v0.59.0
 license: MIT
-projectURL: # A URL related to the catalog entry
+projectURL: https://github.com/biggis-project/biggis-infrastructure

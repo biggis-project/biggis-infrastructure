@@ -5,7 +5,7 @@ services:
 # Modelling (UI)
 # -----------------------------------------------------------------------------
   nginx:
-    image: registry.biggis.bwcloud/streampipes/nginx:1.13
+    image: registry.biggis.project.de/streampipes/nginx:1.13
     hostname: nginx
     container_name: nginx
     ports:
@@ -24,7 +24,7 @@ services:
         max-file: "1"
 
   backend:
-    image: registry.biggis.bwcloud/streampipes/backend:8.0.36
+    image: registry.biggis.project.de/streampipes/backend:8.0.36
     hostname: backend
     container_name: backend
     # optional
@@ -50,7 +50,7 @@ services:
 # Connectors
 # -----------------------------------------------------------------------------
   sources:
-      image: registry.biggis.bwcloud/streampipes/sources-samples
+      image: registry.biggis.project.de/streampipes/sources-samples
       hostname: sources
       container_name: sources
       ports:
@@ -68,7 +68,7 @@ services:
           max-file: "1"
 
   sinks:
-      image: registry.biggis.bwcloud/streampipes/sinks-samples
+      image: registry.biggis.project.de/streampipes/sinks-samples
       hostname: sinks
       container_name: sinks
       ports:
@@ -87,7 +87,7 @@ services:
 # Analytics
 # -----------------------------------------------------------------------------
   flink-nodes:
-      image: registry.biggis.bwcloud/streampipes/flink-nodes
+      image: registry.biggis.project.de/streampipes/flink-nodes
       hostname: flink-nodes
       container_name: flink-nodes
       depends_on:
@@ -246,7 +246,7 @@ services:
 
   # StreamPipes (when Kafka is not supported)
   activemq:
-    image: registry.biggis.bwcloud/streampipes/activemq:5.14.4
+    image: registry.biggis.project.de/streampipes/activemq:5.14.4
     hostname: activemq
     container_name: activemq
     ports:

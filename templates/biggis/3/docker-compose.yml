@@ -1,0 +1,472 @@
+version: '2'
+services:
+
+# -----------------------------------------------------------------------------
+# UI
+# -----------------------------------------------------------------------------
+  geoserver:
+      image: biggis/geoserver:2.10.4
+      hostname: geoserver
+      ports:
+        - "9090:9090"
+      environment:
+        USER_ID: ${USER_ID-1000}
+        USER_NAME: geoserver
+        TOMCAT_ADMIN: biggis
+        TOMCAT_ADMIN_PASSWORD: biggis
+        TIMEZONE: Europe/Berlin
+        CATALINA_HOME: /opt/tomcat
+      volumes:
+       - geoserver-data:/opt/tomcat/webapps/geoserver/data
+    labels:
+      io.rancher.container.pull_image: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+
+# -----------------------------------------------------------------------------
+# Modelling (UI)
+# -----------------------------------------------------------------------------
+  # nginx:
+  #   image: registry.biggis.project.de/streampipes/nginx:1.13
+  #   hostname: nginx
+  #   container_name: nginx
+  #   ports:
+  #     - "80:80"
+  #   depends_on:
+  #     - backend
+  #     - activemq
+  #     - couchdb
+  #   labels:
+  #     io.rancher.container.pull_image: always
+  #   logging:
+  #     driver: "json-file"
+  #     options:
+  #       max-size: "1m"
+  #       max-file: "1"
+  #
+  # backend:
+  #   image: registry.biggis.project.de/streampipes/backend:8.0.36
+  #   hostname: backend
+  #   container_name: backend
+  #   # optional
+  #   ports:
+  #     - "8030:8030"
+  #   environment:
+  #     USER_ID: 1000
+  #     USER_NAME: tomcat
+  #     TOMCAT_ADMIN: biggis
+  #     TOMCAT_ADMIN_PASSWORD: biggis
+  #   volumes:
+  #    - streampipes-config:/root/.streampipes
+  #    - sesame-data:/root/.aduna
+  #   labels:
+  #     io.rancher.container.pull_image: always
+  #   logging:
+  #     driver: "json-file"
+  #     options:
+  #       max-size: "1m"
+  #       max-file: "1"
+
+# -----------------------------------------------------------------------------
+# Connectors
+# -----------------------------------------------------------------------------
+  # sources:
+  #     image: registry.biggis.project.de/streampipes/sources-samples
+  #     hostname: sources
+  #     container_name: sources
+  #     ports:
+  #       - "8089:8089"
+  #     depends_on:
+  #       - kafka
+  #     volumes:
+  #       - streampipes-config:/root/.streampipes
+  #     labels:
+  #       io.rancher.container.pull_image: always
+  #     logging:
+  #       driver: "json-file"
+  #       options:
+  #         max-size: "1m"
+  #         max-file: "1"
+  #
+  # sinks:
+  #     image: registry.biggis.project.de/streampipes/sinks-samples
+  #     hostname: sinks
+  #     container_name: sinks
+  #     ports:
+  #       - "8091:8091"
+  #     volumes:
+  #       - streampipes-config:/root/.streampipes
+  #     labels:
+  #       io.rancher.container.pull_image: always
+  #     logging:
+  #       driver: "json-file"
+  #       options:
+  #         max-size: "1m"
+  #         max-file: "1"
+
+# -----------------------------------------------------------------------------
+# Analytics
+# -----------------------------------------------------------------------------
+  # flink-nodes:
+  #     image: registry.biggis.project.de/streampipes/flink-nodes
+  #     hostname: flink-nodes
+  #     container_name: flink-nodes
+  #     depends_on:
+  #       - flink-jobmanager
+  #     ports:
+  #       - "8094:8094"
+  #     volumes:
+  #       - streampipes-config:/root/.streampipes
+  #     labels:
+  #       io.rancher.container.pull_image: always
+  #     logging:
+  #       driver: "json-file"
+  #       options:
+  #         max-size: "1m"
+  #         max-file: "1"
+
+  flink-jobmanager:
+    image: biggis/flink:1.3.0
+    hostname: jobmanager
+    container_name: flink-jobmanager
+    ports:
+      - "8081:8081"
+      - "6123:6123"
+    command: docker-entrypoint.sh jobmanager
+    environment:
+      USER_ID: 1000
+      USER_NAME: flink
+    labels:
+      io.rancher.container.pull_image: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+
+  flink-taskmanager:
+    image: biggis/flink:1.3.0
+    hostname: taskmanager
+    depends_on:
+      - flink-jobmanager
+    command: docker-entrypoint.sh taskmanager
+    environment:
+      USER_ID: 1000
+      USER_NAME: flink
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.affinity:container_soft_ne: io.rancher.stack_service.name=$${stack_name}/$${service_name}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+
+  spark-master:
+    image: biggis/spark:2.1.0
+    hostname: spark-master
+    container_name: spark-master
+    ports:
+      - "4040:4040"
+      - "6066:6066"
+      - "7077:7077"
+      - "8080:8080"
+    command: start.sh master
+    environment:
+      USER_ID: 1000
+      USER_NAME: spark
+      MASTER: spark://spark-master:7077
+      SPARK_CONF_DIR: /conf
+      SPARK_PUBLIC_DNS: 127.0.0.1
+    labels:
+      io.rancher.container.pull_image: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+
+  spark-worker:
+    image: biggis/spark:2.1.0
+    hostname: spark-worker
+    depends_on:
+      - spark-master
+    command: start.sh worker
+    # ports:
+    #   - "8082:8081"
+    environment:
+      USER_ID: 1000
+      USER_NAME: spark
+      SPARK_MASTER: spark-master
+      SPARK_CONF_DIR: /conf
+      SPARK_PUBLIC_DNS: 127.0.0.1
+      SPARK_WORKER_CORES: 1
+      SPARK_WORKER_MEMORY: 1g
+      # SPARK_WORKER_PORT: 8082
+      SPARK_WORKER_WEBUI_PORT: 8081
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.affinity:container_soft_ne: io.rancher.stack_service.name=$${stack_name}/$${service_name}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+
+# -----------------------------------------------------------------------------
+# Middleware
+# -----------------------------------------------------------------------------
+  zookeeper:
+    image: biggis/zookeeper:3.4.9
+    hostname: zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      USER_ID: 1000
+      USER_NAME: zookeeper
+    volumes:
+      - zookeeper-data:/tmp/zookeeper/data
+    labels:
+      io.rancher.container.pull_image: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+
+  kafka:
+    image: biggis/kafka:0.10.1.1
+    hostname: kafka
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      #KAFKA_ADVERTISED_HOST_NAME: localhost
+      USER_ID: 1000
+      USER_NAME: kafka
+    volumes:
+      - kafka-data:/tmp/kafka/data
+    labels:
+      io.rancher.container.pull_image: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+
+  # StreamPipes (when Kafka is not supported)
+  # activemq:
+  #   image: registry.biggis.project.de/streampipes/activemq:5.14.4
+  #   hostname: activemq
+  #   container_name: activemq
+  #   ports:
+  #     - "61616:61616"
+  #     - "61614:61614"
+  #   labels:
+  #     io.rancher.container.pull_image: always
+  #   logging:
+  #     driver: "json-file"
+  #     options:
+  #       max-size: "1m"
+  #       max-file: "1"
+
+# -----------------------------------------------------------------------------
+# Storage Backends
+# -----------------------------------------------------------------------------
+  # couchdb:
+  #   image: couchdb
+  #   hostname: couchdb
+  #   container_name: couchdb
+  #   ports:
+  #     - "5984:5984"
+  #   volumes:
+  #    - couchdb-data:/usr/local/var/lib/couchdb
+  #   labels:
+  #     io.rancher.container.pull_image: always
+  #     io.rancher.scheduler.affinity:host_label: nfs_server=true
+  #   logging:
+  #     driver: "json-file"
+  #     options:
+  #       max-size: "1m"
+  #       max-file: "1"
+
+  exasol:
+    image: exasol/docker-db:6.0.1-d1sc1
+    hostname: exasol
+    container_name: exasol
+    ports:
+      - "8888:8888"
+      - "6583:6583"
+    privileged: true
+    volumes:
+      - exasol-data:/exa
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.affinity:host_label: nfs_server=true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+
+  hdfs-name:
+      image: biggis/hdfs:2.7.1
+      ports:
+        - "50070:50070"
+        - "8020:8020"
+      command: start.sh name
+      environment:
+        USER_ID: ${USER_ID-1000}
+        USER_NAME: hdfs
+        HADOOP_MASTER_ADDRESS: hdfs-name
+        TIMEZONE: Europe/Berlin
+      volumes:
+        - hdfs-data:/data/hdfs
+      labels:
+        io.rancher.container.pull_image: always
+      logging:
+        driver: "json-file"
+        options:
+          max-size: "1m"
+          max-file: "1"
+
+    hdfs-sname:
+      image: biggis/hdfs:2.7.1
+      depends_on:
+          - hdfs-name
+      ports:
+        - "50090:50090"
+      command: start.sh sname
+      environment:
+        USER_ID: ${USER_ID-1000}
+        USER_NAME: hdfs
+        HADOOP_MASTER_ADDRESS: hdfs-name
+        TIMEZONE: Europe/Berlin
+      volumes:
+        - hdfs-data:/data/hdfs
+      labels:
+        io.rancher.container.pull_image: always
+      logging:
+        driver: "json-file"
+        options:
+          max-size: "1m"
+          max-file: "1"
+
+    hdfs-data:
+      image: biggis/hdfs:2.7.1
+      depends_on:
+          - hdfs-name
+      ports:
+        - "50010:50010"
+        - "50075:50075"
+      command: start.sh data
+      environment:
+        USER_ID: ${USER_ID-1000}
+        USER_NAME: hdfs
+        HADOOP_MASTER_ADDRESS: hdfs-name
+        TIMEZONE: Europe/Berlin
+      volumes:
+        - hdfs-data:/data/hdfs
+      labels:
+        io.rancher.container.pull_image: always
+        io.rancher.scheduler.global: 'true'
+      logging:
+        driver: "json-file"
+        options:
+          max-size: "1m"
+          max-file: "1"
+
+    accumulo-master:
+      image: biggis/accumulo:1.7.3
+      depends_on:
+        - zookeeper
+        - hdfs-name
+      command: ["start.sh", "master", "--auto-init"]
+      environment:
+        USER_ID: ${USER_ID-1000}
+        USER_NAME: accumulo
+        HADOOP_MASTER_ADDRESS: hdfs-name
+        ZOOKEEPERS: zookeeper
+        ACCUMULO_PASSWORD: BigGISPwd
+        TIMEZONE: Europe/Berlin
+      labels:
+        io.rancher.container.pull_image: always
+      logging:
+        driver: "json-file"
+        options:
+          max-size: "1m"
+          max-file: "1"
+
+    accumulo-monitor:
+      image: biggis/accumulo:1.7.3
+      depends_on:
+        - zookeeper
+        - accumulo-master
+      command: ["start.sh", "monitor"]
+      ports:
+        - 50095:50095
+      environment:
+        USER_ID: ${USER_ID-1000}
+        USER_NAME: accumulo
+        HADOOP_MASTER_ADDRESS: hdfs-name
+        ZOOKEEPERS: zookeeper
+        TIMEZONE: Europe/Berlin
+      labels:
+        io.rancher.container.pull_image: always
+      logging:
+        driver: "json-file"
+        options:
+          max-size: "1m"
+          max-file: "1"
+
+    accumulo-tserver:
+      image: biggis/accumulo:1.7.3
+      depends_on:
+        - zookeeper
+        - accumulo-master
+      command: ["start.sh", "tserver"]
+      environment:
+        USER_ID: ${USER_ID-1000}
+        USER_NAME: accumulo
+        HADOOP_MASTER_ADDRESS: hdfs-name
+        ZOOKEEPERS: zookeeper
+        TIMEZONE: Europe/Berlin
+      labels:
+        io.rancher.container.pull_image: always
+      logging:
+        driver: "json-file"
+        options:
+          max-size: "1m"
+          max-file: "1"
+
+volumes:
+  zookeeper-data:
+    driver: rancher-nfs
+    external: true
+  kafka-data:
+    driver: rancher-nfs
+    external: true
+  exasol-data:
+    driver: rancher-nfs
+    external: true
+  # couchdb-data:
+  #   driver: rancher-nfs
+  #   external: true
+  # sesame-data:
+  #   driver: rancher-nfs
+  #   external: true
+  # streampipes-config:
+  #   driver: rancher-nfs
+  #   external: true
+  geoserver-data:
+    driver: rancher-nfs
+    external: true
+  hdfs-data:
+    driver: rancher-nfs
+    external: true
