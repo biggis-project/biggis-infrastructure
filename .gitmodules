@@ -25,3 +25,9 @@
 [submodule "docker/base"]
 	path = docker/base
 	url = https://github.com/biggis-project/biggis-base
+[submodule "docker/exasol"]
+	path = docker/exasol
+	url = https://github.com/EXASOL/docker-db
+[submodule "docker/postgres"]
+	path = docker/postgres
+	url = https://github.com/biggis-project/biggis-postgres
