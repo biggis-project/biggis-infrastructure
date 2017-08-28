@@ -9,6 +9,7 @@ services:
       - "6123:6123"
     command: docker-entrypoint.sh jobmanager
     environment:
+      JOB_MANAGER_RPC_ADDRESS: jobmanager
       USER_ID: 1000
       USER_NAME: flink
 
@@ -22,5 +23,6 @@ services:
       io.rancher.scheduler.affinity:container_soft_ne: io.rancher.stack_service.name=$${stack_name}/$${service_name}
       io.rancher.scheduler.global: 'true'
     environment:
+      JOB_MANAGER_RPC_ADDRESS: jobmanager
       USER_ID: 1000
       USER_NAME: flink

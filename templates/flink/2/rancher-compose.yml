@@ -6,13 +6,6 @@
   minimum_rancher_version: v0.59.0
   maintainer: "Patrick Wiener <patrick.wiener@hs-karlsruhe.de>"
   uuid: flink-0
-  questions:
-    - variable: "flink_scale"
-      description: "Number of Flink taskmanager nodes."
-      label: "Flink Nodes:"
-      required: true
-      default: 1
-      type: "int"
 jobmanager:
   retain_ip: true
   health_check:
@@ -22,5 +15,3 @@ jobmanager:
     request_line: ''
     healthy_threshold: 2
     response_timeout: 5000
-taskmanager:
-    scale: ${flink_scale}
