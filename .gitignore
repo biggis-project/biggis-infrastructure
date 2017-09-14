@@ -17,3 +17,4 @@ virtualbox/
 vagrant/
 zookeeper/
 env-*
+env.*
